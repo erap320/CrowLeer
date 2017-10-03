@@ -76,8 +76,8 @@
     <LibraryPath>D:\git\CrowLeer\CrowLeer\curl;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Elia\Desktop\CrowLeer\CrowLeer\curl;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Elia\Desktop\CrowLeer\CrowLeer\curl;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\git\CrowLeer\CrowLeer\curl;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\git\CrowLeer\CrowLeer\curl;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
