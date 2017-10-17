@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <vector>
+#include <queue>
+#include <unordered_set>
 using namespace std;
 
 #define CURL_STATICLIB
@@ -12,8 +14,17 @@ using namespace std;
 //Function used by CURL to add chunks of data to the response string
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
 
-//View every item in the vector
-void debug_vector(vector<string> data);
+//Make an HTTP request with CURL
+string HTTPrequest(string url);
+
+//View every item in the data structure
+void debug_out(const unordered_set<string>& data);
+
+//Save string in file
+bool debug_file(const string& str, string path);
+
+//Search for hrefs in the response, verify if it was already found elsewhere and eventually push it in the todo queue
+void crawl(const string& response, unordered_set<string>& data, queue<string>& todo);
 
 int main(void)
 {
@@ -21,46 +32,28 @@ int main(void)
 	cout << "URL: ";
 	cin >> url;
 
-	//CURL parameters
-	CURL *curl;
-	CURLcode res;
-
 	string response; //Contains HTTP response
 
-	//CURL initialization
-	curl = curl_easy_init();
-	if (curl) {
-		//CURL options
-		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)&response);
+	response = HTTPrequest(url);
 
-		//HTTP request execution
-		res = curl_easy_perform(curl);
-		if (res != CURLE_OK)
-			cout << "curl_easy_perform() failed: " << curl_easy_strerror(res) << "\n";
+	unordered_set<string> urls; //Hash table which contains the URLs found in the response
+	queue<string> todo; //Queue containing the urls left to crawl
 
-		//CURL cleanup
-		curl_easy_cleanup(curl);
-	}
+	crawl(response, urls, todo);
 
-	int pos; //Holds the position of the string searched for in the response
-	int before, after; //Hold the position of opening and closing quote of the href property
-	vector<string> urls; //Contains the URLs found in the response
-
-	//Find every href in the page and add the URL to the urls vector
-	pos = response.find("href");
-	while (pos < response.length() && pos != string::npos)
+	/*while (!todo.empty())
 	{
-		before = response.find_first_of("\"'", pos + 4);
-		after = response.find(response[before], before+1);
-		urls.push_back(response.substr(before + 1, after - before - 1));
-		pos = response.find("href", after+1);
-	}
-	
-	debug_vector(urls);
+		url = todo.front();
+		todo.pop();
+		cout << url << endl;
+		response = HTTPrequest(url);
+		crawl(response, urls, todo);
+	}*/
 
+	debug_file(response, "C:\\Users\\Elia\\Desktop\\CrowLeerDebug.html");
+	debug_out(urls);
+
+	cout << "\nEnded";
 	cin.ignore();
 	cin.get();
 	return 0;
@@ -75,10 +68,94 @@ size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 	return realsize;
 }
 
-void debug_vector(vector<string> data)
+string HTTPrequest(string url)
 {
-	for (int i=0; i<data.size(); i++)
+	//CURL parameters
+	CURL *curl;
+	CURLcode res;
+
+	string response; //Contains HTTP response
+	
+					 //CURL initialization
+	curl = curl_easy_init();
+	if (curl) {
+		//CURL options
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)&response);
+
+		//URL setting
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+		//HTTP request execution
+		res = curl_easy_perform(curl);
+		if (res != CURLE_OK)
+		{
+			cout << "curl_easy_perform() failed: " << curl_easy_strerror(res) << "\n";
+			cin.clear();
+			cin.get();
+		}
+
+		//CURL cleanup
+		curl_easy_cleanup(curl);
+	}
+
+	return response;
+}
+
+void debug_out(const unordered_set<string>& data)
+{
+	cout << endl;
+	for (auto it=data.begin(); it!=data.end(); it++)
 	{
-		cout << data[i] << endl;
+		cout << *it << endl;
+	}
+}
+
+bool debug_file(const string& str, string path)
+{
+	ofstream out(path);
+	if (!out.is_open())
+		return false;
+	out << str;
+	out.close();
+}
+
+int findhref(const string& response, int offset)
+{
+	int pos; //Holds the position of the string searched for in the response
+
+	pos = response.find("href", offset);
+
+	int i;
+	for (i = pos + 1; response[i] != ' '; i++)
+		;
+	if (response[i] == '=')
+		return i;
+	
+	while (pos < response.length() && pos != string::npos)
+	{
+		pos = findhref(response, offset+4);
+	}
+
+	return pos;
+}
+
+void crawl(const string& response, unordered_set<string>& urls, queue<string>& todo)
+{
+	int pos; //Holds the position of the string searched for in the response
+	int before, after; //Hold the position of opening and closing quote of the href property
+	string temp;
+
+	//Find every href in the page and add the URL to the urls vector
+	pos = response.find("href");
+	while (pos < response.length() && pos != string::npos)
+	{
+		before = response.find_first_of("\"'", pos + 4);
+		after = response.find(response[before], before + 1);
+		temp = response.substr(before + 1, after - before - 1);
+		urls.insert(temp);
+		todo.push(temp);
+		pos = response.find("href", after + 1);
 	}
 }
