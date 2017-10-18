@@ -126,19 +126,22 @@ int findhref(const string& response, int offset)
 	int pos; //Holds the position of the string searched for in the response
 
 	pos = response.find("href", offset);
-
-	int i;
-	for (i = pos + 1; response[i] != ' '; i++)
-		;
-	if (response[i] == '=')
-		return i;
 	
-	while (pos < response.length() && pos != string::npos)
+	while (pos < response.length())
 	{
-		pos = findhref(response, offset+4);
+		if (pos == string::npos)
+			return pos;
+		for (pos+=4; response[pos] == ' '; pos++)
+			;
+		if (response[pos] == '=')
+		{
+			for (; response[pos] == ' '; pos++)
+				;
+			if(response[pos]=='\'' || response[pos]=='"')
+				return pos;
+		}
+		pos = response.find("href", pos+4);
 	}
-
-	return pos;
 }
 
 void crawl(const string& response, unordered_set<string>& urls, queue<string>& todo)
@@ -148,7 +151,7 @@ void crawl(const string& response, unordered_set<string>& urls, queue<string>& t
 	string temp;
 
 	//Find every href in the page and add the URL to the urls vector
-	pos = response.find("href");
+	pos = findhref(response, 0);
 	while (pos < response.length() && pos != string::npos)
 	{
 		before = response.find_first_of("\"'", pos + 4);
@@ -156,6 +159,6 @@ void crawl(const string& response, unordered_set<string>& urls, queue<string>& t
 		temp = response.substr(before + 1, after - before - 1);
 		urls.insert(temp);
 		todo.push(temp);
-		pos = response.find("href", after + 1);
+		pos = findhref(response, after + 1);
 	}
 }
