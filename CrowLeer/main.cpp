@@ -9,6 +9,7 @@ using std::cout; using std::cin; using std::endl;
 int main(void)
 {
 	//string url;
+	//int depth;
 	//cout << "URL: ";
 	//cin >> url;
 
@@ -30,18 +31,18 @@ int main(void)
 	//	crawl(response, urls, todo);
 	//}*/
 
-	//debug_file(response, "C:\\Users\\Elia\\Desktop\\CrowLeerDebug.html");
-	//debug_out(urls);
+
 
 	//cout << "\nEnded";
-	//cin.ignore();
-	//cin.get();
-	//return 0;
 
-	string test = "http://erap.space/kb/blog/index.php?prova=2#paolo";
-	uri temp(test);
+	string parento = "https://cani.com/cose/cipolla.bin?culo";
+	string zollo = "gneh.gnoh";
 
-	temp.debug();
+	uri test;
+	test = parse(zollo);
+	cout << test.tostring() << endl;
 
+	cin.ignore();
+	cin.get();
 	return 0;
 }

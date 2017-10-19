@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "uri.h"
 
 #include <iostream>
 #include <fstream>
@@ -57,7 +58,6 @@ string HTTPrequest(string url)
 
 void debug_out(const unordered_set<string>& data)
 {
-	cout << endl;
 	for (auto it = data.begin(); it != data.end(); it++)
 	{
 		cout << *it << endl;
@@ -102,7 +102,7 @@ void crawl(const string& response, unordered_set<string>& urls, queue<string>& t
 {
 	int pos; //Holds the position of the string searched for in the response
 	int before, after; //Hold the position of opening and closing quote of the href property
-	string temp;
+	string extracted;
 
 	//Find every href in the page and add the URL to the urls vector
 	pos = findhref(response, 0);
@@ -110,9 +110,10 @@ void crawl(const string& response, unordered_set<string>& urls, queue<string>& t
 	{
 		before = response.find_first_of("\"'", pos + 4);
 		after = response.find(response[before], before + 1);
-		temp = response.substr(before + 1, after - before - 1);
-		urls.insert(temp);
-		todo.push(temp);
+		extracted = response.substr(before + 1, after - before - 1);
+
+		urls.insert(extracted);
+		todo.push(extracted);
 		pos = findhref(response, after + 1);
 	}
 }
