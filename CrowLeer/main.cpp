@@ -1,44 +1,21 @@
-#include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <queue>
 #include <unordered_set>
-#include <http.h>
-using namespace std;
+
+using std::cout; using std::cin; using std::endl;
+using std::ofstream;
+using std::string;
+using std::unordered_set;
+using std::queue;
 
 #define CURL_STATICLIB
 #include "curl.h"
 
 #pragma comment(lib, "libcurl_a.lib")
 
-class uri {
-	public:
-		string protocol;
-		string domain;
-		string path;
-		string file;
-		string extention;
-		string querystring;
-		string anchor;
-
-		uri operator=(const uri& other)
-		{
-			this->protocol = other.protocol;
-			this->domain = other.domain;
-			this->path = other.path;
-			this->file = other.file;
-			this->extention = other.extention;
-			this->querystring = other.querystring;
-			this->anchor = other.anchor;
-			return *this;
-		}
-
-		uri(string str)
-		{
-			
-		}
-};
+class uri;
 
 //Function used by CURL to add chunks of data to the response string
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
@@ -57,6 +34,40 @@ int findhref(const string& response, int offset);
 
 //Search for hrefs in the response, verify if it was already found elsewhere and eventually push it in the todo queue
 void crawl(const string& response, unordered_set<string>& data, queue<string>& todo);
+
+//Divide a string representing a URI in its components for easier management
+uri parse(string str);
+
+class uri {
+public:
+	string protocol;
+	string domain;
+	string path;
+	string file;
+	string extention;
+	string querystring;
+	string anchor;
+
+	uri operator=(const uri& other)
+	{
+		this->protocol = other.protocol;
+		this->domain = other.domain;
+		this->path = other.path;
+		this->file = other.file;
+		this->extention = other.extention;
+		this->querystring = other.querystring;
+		this->anchor = other.anchor;
+		return *this;
+	}
+
+	uri()
+	{}
+
+	uri(string str)
+	{
+		*this = parse(str);
+	}
+};
 
 int main(void)
 {
@@ -107,7 +118,7 @@ string HTTPrequest(string url)
 	CURLcode res;
 
 	string response; //Contains HTTP response
-	
+
 					 //CURL initialization
 	curl = curl_easy_init();
 	if (curl) {
@@ -138,7 +149,7 @@ string HTTPrequest(string url)
 void debug_out(const unordered_set<string>& data)
 {
 	cout << endl;
-	for (auto it=data.begin(); it!=data.end(); it++)
+	for (auto it = data.begin(); it != data.end(); it++)
 	{
 		cout << *it << endl;
 	}
@@ -159,19 +170,19 @@ int findhref(const string& response, int offset)
 
 	int i;
 	pos = response.find("href", offset); //Find the string "href"
-	
+
 	while (pos < response.length())
 	{
 		if (pos == string::npos) //If the string is not in the response
 			return pos;
-		for (i=pos+4; response[i] == ' '; i++) //Point to the first non-space char
+		for (i = pos + 4; response[i] == ' '; i++) //Point to the first non-space char
 			;
 		//Check if the href is followed by =' or ="
 		if (response[i] == '=')
 		{
 			for (i++; response[i] == ' '; i++)
 				;
-			if(response[i]=='\'' || response[i]=='"')
+			if (response[i] == '\'' || response[i] == '"')
 				return pos;
 		}
 		pos = response.find("href", i); //Look for the next href
@@ -195,4 +206,10 @@ void crawl(const string& response, unordered_set<string>& urls, queue<string>& t
 		todo.push(temp);
 		pos = findhref(response, after + 1);
 	}
+}
+
+uri parse(string str)
+{
+	uri temp;
+	return temp;
 }
