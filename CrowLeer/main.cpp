@@ -23,6 +23,9 @@ void debug_out(const unordered_set<string>& data);
 //Save string in file
 bool debug_file(const string& str, string path);
 
+//Finds the position of the next valid "href" string, that leads to a real URL
+int findhref(const string& response, int offset);
+
 //Search for hrefs in the response, verify if it was already found elsewhere and eventually push it in the todo queue
 void crawl(const string& response, unordered_set<string>& data, queue<string>& todo);
 
@@ -91,7 +94,7 @@ string HTTPrequest(string url)
 		res = curl_easy_perform(curl);
 		if (res != CURLE_OK)
 		{
-			cout << "curl_easy_perform() failed: " << curl_easy_strerror(res) << "\n";
+			cout << ">>Network Error: " << curl_easy_strerror(res) << "\n";
 			cin.clear();
 			cin.get();
 		}
@@ -125,22 +128,23 @@ int findhref(const string& response, int offset)
 {
 	int pos; //Holds the position of the string searched for in the response
 
+	int i;
 	pos = response.find("href", offset);
 	
 	while (pos < response.length())
 	{
 		if (pos == string::npos)
 			return pos;
-		for (pos+=4; response[pos] == ' '; pos++)
+		for (i=pos+4; response[i] == ' '; i++)
 			;
-		if (response[pos] == '=')
+		if (response[i] == '=')
 		{
-			for (; response[pos] == ' '; pos++)
+			for (i++; response[i] == ' '; i++)
 				;
-			if(response[pos]=='\'' || response[pos]=='"')
+			if(response[i]=='\'' || response[i]=='"')
 				return pos;
 		}
-		pos = response.find("href", pos+4);
+		pos = response.find("href", i);
 	}
 }
 
