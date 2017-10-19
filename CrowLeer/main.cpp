@@ -4,12 +4,41 @@
 #include <string>
 #include <queue>
 #include <unordered_set>
+#include <http.h>
 using namespace std;
 
 #define CURL_STATICLIB
 #include "curl.h"
 
 #pragma comment(lib, "libcurl_a.lib")
+
+class uri {
+	public:
+		string protocol;
+		string domain;
+		string path;
+		string file;
+		string extention;
+		string querystring;
+		string anchor;
+
+		uri operator=(const uri& other)
+		{
+			this->protocol = other.protocol;
+			this->domain = other.domain;
+			this->path = other.path;
+			this->file = other.file;
+			this->extention = other.extention;
+			this->querystring = other.querystring;
+			this->anchor = other.anchor;
+			return *this;
+		}
+
+		uri(string str)
+		{
+			
+		}
+};
 
 //Function used by CURL to add chunks of data to the response string
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
@@ -94,7 +123,7 @@ string HTTPrequest(string url)
 		res = curl_easy_perform(curl);
 		if (res != CURLE_OK)
 		{
-			cout << ">>Network Error: " << curl_easy_strerror(res) << "\n";
+			cout << ">> Network Error: " << curl_easy_strerror(res) << "\n";
 			cin.clear();
 			cin.get();
 		}
@@ -129,14 +158,15 @@ int findhref(const string& response, int offset)
 	int pos; //Holds the position of the string searched for in the response
 
 	int i;
-	pos = response.find("href", offset);
+	pos = response.find("href", offset); //Find the string "href"
 	
 	while (pos < response.length())
 	{
-		if (pos == string::npos)
+		if (pos == string::npos) //If the string is not in the response
 			return pos;
-		for (i=pos+4; response[i] == ' '; i++)
+		for (i=pos+4; response[i] == ' '; i++) //Point to the first non-space char
 			;
+		//Check if the href is followed by =' or ="
 		if (response[i] == '=')
 		{
 			for (i++; response[i] == ' '; i++)
@@ -144,7 +174,7 @@ int findhref(const string& response, int offset)
 			if(response[i]=='\'' || response[i]=='"')
 				return pos;
 		}
-		pos = response.find("href", i);
+		pos = response.find("href", i); //Look for the next href
 	}
 }
 
