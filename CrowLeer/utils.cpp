@@ -12,6 +12,8 @@
 using std::cout; using std::cin;  using std::endl;
 using std::ofstream;
 
+mutex lock;
+
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
 	size_t realsize = size * nmemb;
@@ -113,6 +115,7 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 		after = response.find(response[before], before + 1);
 		extracted = response.substr(before + 1, after - before - 1);
 
+		lock.lock();
 		//Add only if never found before
 		auto search = urls.find(extracted);
 		if (search == urls.end())
@@ -120,6 +123,7 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 			urls.insert(extracted);
 			todo.push(parse(extracted,parent));
 		}
+		lock.unlock();
 
 		pos = findhref(response, after + 1);
 	}

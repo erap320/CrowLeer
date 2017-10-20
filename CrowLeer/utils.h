@@ -2,12 +2,16 @@
 #include <string>
 #include <unordered_set>
 #include <queue>
+#include <mutex>
 
 #include "uri.h"
 
 using std::string;
 using std::unordered_set;
 using std::queue;
+using std::mutex;
+
+extern mutex lock;
 
 //Function used by CURL to add chunks of data to the response string
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
