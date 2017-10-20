@@ -98,11 +98,12 @@ int findhref(const string& response, int offset)
 	}
 }
 
-void crawl(const string& response, unordered_set<string>& urls, queue<string>& todo)
+void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, uri* const parent)
 {
 	int pos; //Holds the position of the string searched for in the response
 	int before, after; //Hold the position of opening and closing quote of the href property
 	string extracted;
+	uri temp;
 
 	//Find every href in the page and add the URL to the urls vector
 	pos = findhref(response, 0);
@@ -112,8 +113,14 @@ void crawl(const string& response, unordered_set<string>& urls, queue<string>& t
 		after = response.find(response[before], before + 1);
 		extracted = response.substr(before + 1, after - before - 1);
 
-		urls.insert(extracted);
-		todo.push(extracted);
+		//Add only if never found before
+		auto search = urls.find(extracted);
+		if (search == urls.end())
+		{
+			urls.insert(extracted);
+			todo.push(parse(extracted,parent));
+		}
+
 		pos = findhref(response, after + 1);
 	}
 }

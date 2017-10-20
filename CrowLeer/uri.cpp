@@ -202,7 +202,7 @@ uri parse(string str, uri* const parent)
 			return temp;
 		}
 	}
-	else if(str.length() > 0) //Check back for missed Path
+	else if(str.length() > 0 && !temp.path.empty()) //Check back for missed Path
 	{
 		if (pos != string::npos)
 		{

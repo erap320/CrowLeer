@@ -6,8 +6,6 @@
 
 using std::cout; using std::cin; using std::endl;
 
-
-
 int main(void)
 {
 	string url;
@@ -22,10 +20,19 @@ int main(void)
 
 	response = HTTPrequest(url);
 
+	uri base(url);
 	unordered_set<string> urls; //Hash table which contains the URLs found in the response
-	queue<string> todo; //Queue containing the urls left to crawl
+	queue<uri> todo; //Queue containing the urls left to crawl
 
-	crawl(response, urls, todo);
+	crawl(response, urls, todo, &base);
+
+	uri newbase;
+	for (auto it=urls.begin(); it!=urls.end(); it++)
+	{
+		newbase = parse(*it, &base);
+		response = HTTPrequest( newbase.tostring() );
+		crawl(response, urls, todo, &newbase);
+	}
 
 	/*while (!todo.empty())
 	{
@@ -36,21 +43,11 @@ int main(void)
 		crawl(response, urls, todo);
 	}*/
 
-	uri test(url);
-	test.debug();
-	cout << endl << endl;
-
-	for (auto i = urls.begin(); i != urls.end(); i++)
+	/*while (!todo.empty())
 	{
-		if (i->find("photos") != string::npos)
-		{
-			cout << *i << endl;
-			parse(*i).debug();
-			cout << endl;
-			cout << parse(*i, &test).tostring() << endl;
-		}
-	}
-
+		cout << todo.front().tostring() << endl;
+		todo.pop();
+	}*/
 
 	cout << "\nEnded";
 	cin.ignore();

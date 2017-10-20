@@ -3,6 +3,8 @@
 #include <unordered_set>
 #include <queue>
 
+#include "uri.h"
+
 using std::string;
 using std::unordered_set;
 using std::queue;
@@ -23,7 +25,7 @@ bool debug_file(const string& str, string path);
 int findhref(const string& response, int offset);
 
 //Search for hrefs in the response, verify if it was already found elsewhere and eventually push it in the todo queue
-void crawl(const string& response, unordered_set<string>& data, queue<string>& todo);
+void crawl(const string& response, unordered_set<string>& data, queue<uri>& todo, uri* const parent = nullptr);
 
 //Fixes initial urls to make them uri parsing compliant
 string validate(string url);
