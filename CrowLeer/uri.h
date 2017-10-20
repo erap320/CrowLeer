@@ -27,8 +27,5 @@ public:
 //Remove every space character from string
 string trim(string str);
 
-//Divide a string representing a URI in its components for easier management
-uri parse(string str);
-
-//Parse a string and make it absolute using a parent uri
-uri makeabsolute(string str, uri parent);
+//Divide a string representing a URI in its components for easier management, and make it absolute using a parent uri
+uri parse(string str, uri* const parent = nullptr);

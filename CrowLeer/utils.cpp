@@ -117,3 +117,13 @@ void crawl(const string& response, unordered_set<string>& urls, queue<string>& t
 		pos = findhref(response, after + 1);
 	}
 }
+
+string validate(string url)
+{
+	url = trim(url);
+	int pos;
+	pos = url.find("://");
+	if (pos == string::npos)
+		url = "http://" + url;
+	return url;
+}

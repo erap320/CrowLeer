@@ -85,7 +85,7 @@ string trim(string str)
 	return str;
 }
 
-uri parse(string str)
+uri parse(string str, uri* const parent)
 {
 	uri temp;
 	int pos;
@@ -96,7 +96,7 @@ uri parse(string str)
 	string relative=""; //Holds relative paths informations
 
 	//Relative path
-	if (str[0] == '\\' || str[0] == '.')
+	if (str[0] == '\\' || str[0] == '.' || str[0]=='/')
 	{
 		relative = str[0];
 		str.erase(0, 1);
@@ -116,28 +116,48 @@ uri parse(string str)
 	if (pos != string::npos && str[pos+1]=='/' && str[pos+2]=='/')
 	{
 		temp.protocol = str.substr(0, pos);
-		str.erase(0, pos + 1);
+		str.erase(0, pos);
 	}
+	else if (parent != nullptr)
+		temp.protocol = parent->protocol;
 
 	//Domain
 	if (relative.empty())
 	{
+
 		pos = str.find("//");
 		if (pos != string::npos)
+		{
 			pos += 2;
-		else
-			pos = 0;
-		end = str.find("/", pos);
-		if (end != string::npos)
-		{
-			temp.domain = str.substr(pos, end - pos);
-			str.erase(0, end + 1);
+			end = str.find("/", pos);
+			if (end != string::npos)
+			{
+				temp.domain = str.substr(pos, end - pos);
+				str.erase(0, end + 1);
+			}
+			else
+			{
+				temp.domain = str.substr(pos);
+				str.clear();
+				return temp;
+			}
 		}
-		else
+		else if (parent != nullptr)
 		{
-			temp.domain = str.substr(pos);
-			str.clear();
-			return temp;
+			temp.domain = parent->domain;
+		}
+	}
+	else if(parent != nullptr)
+	{
+		temp.domain = parent->domain;
+		if (relative == ".")
+			temp.path = parent->path;
+		else if (relative == "..")
+		{
+			temp.path = parent->path;
+			pos = temp.path.find_last_of("/");
+			if (pos != string::npos)
+				temp.path.erase(pos);
 		}
 	}
 
@@ -204,158 +224,6 @@ uri parse(string str)
 		if (pos != string::npos)
 		{
 			temp.querystring = str.substr(1, pos-1);
-			str.erase(0, pos);
-		}
-		else
-		{
-			temp.querystring = str.substr(1);
-			str.clear();
-			return temp;
-		}
-	}
-
-	//Anchor
-	if (str[0] == '#')
-	{
-		temp.anchor = str.substr(1);
-		str.clear();
-	}
-
-	return temp;
-}
-
-uri makeabsolute(string str, uri parent)
-{
-	uri temp;
-	int pos;
-	int end;
-
-	str = trim(str);
-
-	string relative = ""; //Holds relative paths informations
-
-	//Relative path
-	if (str[0] == '\\' || str[0] == '.')
-	{
-		relative = str[0];
-		str.erase(0, 1);
-		if (relative == ".")
-		{
-			if (str[0] == '.')
-			{
-				relative = "..";
-				str.erase(0, 1);
-			}
-			str.erase(0, 1);
-		}
-	}
-
-	//Protocol
-	pos = str.find(":");
-	if (pos != string::npos && str[pos + 1] == '/' && str[pos + 2] == '/')
-	{
-		temp.protocol = str.substr(0, pos);
-		str.erase(0, pos + 1);
-	}
-
-	//Domain
-	if (relative.empty())
-	{
-		pos = str.find("//");
-		if (pos != string::npos)
-			pos += 2;
-		else
-			pos = 0;
-		end = str.find("/", pos);
-		if (end != string::npos)
-		{
-			temp.domain = str.substr(pos, end - pos);
-			str.erase(0, end + 1);
-		}
-		else
-		{
-			temp.domain = str.substr(pos);
-			str.clear();
-			return temp;
-		}
-	}
-	else
-	{
-		temp.domain = parent.domain;
-		if(relative==".")
-			temp.path = parent.path;
-		else if (relative == "..")
-		{
-			temp.path = parent.path;
-			pos = temp.path.find_last_of("/");
-			if (pos != string::npos)
-				temp.path.erase(pos);
-		}
-	}
-
-	//Path
-	pos = str.find_last_of("/");
-	if (pos != string::npos)
-	{
-		temp.path += str.substr(0, pos);
-		str.erase(0, pos + 1);
-	}
-
-	//Filename
-	pos = str.find_last_of(".");
-	if (pos != string::npos)
-	{
-		temp.filename = str.substr(0, pos);
-		str.erase(0, pos + 1);
-	}
-	else if (temp.path.empty()) //Check back for missed Path
-	{
-		pos = str.find_first_of("?#");
-		if (pos != string::npos)
-		{
-			temp.path += str.substr(0, pos);
-			str.erase(0, pos);
-		}
-	}
-
-	//Extension
-	pos = str.find_first_of("?#");
-	if (!temp.filename.empty())
-	{
-		if (pos != string::npos)
-		{
-			temp.extension = str.substr(0, pos);
-			str.erase(0, pos);
-		}
-		else
-		{
-			temp.extension = str;
-			str.clear();
-			return temp;
-		}
-	}
-	else if (str.length() > 0) //Check back for missed Path
-	{
-		if (pos != string::npos)
-		{
-			temp.path += "/" + str.substr(0, pos);
-			str.erase(0, pos);
-		}
-		else
-		{
-			temp.path += "/" + str;
-			str.clear();
-			return temp;
-		}
-	}
-
-	//Querystring
-	if (str[0] == '?')
-	{
-		pos = str.find("#");
-		if (pos != string::npos)
-		{
-			temp.querystring = str.substr(1, pos - 1);
 			str.erase(0, pos);
 		}
 		else
