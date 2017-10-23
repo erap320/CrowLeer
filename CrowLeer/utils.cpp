@@ -116,13 +116,13 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 		extracted = response.substr(before + 1, after - before - 1);
 
 		lock.lock();
-		//Add only if never found before
-		auto search = urls.find(extracted);
-		if (search == urls.end())
-		{
-			urls.insert(extracted);
-			todo.push(parse(extracted,parent));
-		}
+			//Add only if never found before
+			auto search = urls.find(extracted);
+			if (search == urls.end())
+			{
+				urls.insert(extracted);
+				todo.push(parse(extracted,parent));
+			}
 		lock.unlock();
 
 		pos = findhref(response, after + 1);

@@ -5,17 +5,45 @@
 #include "uri.h"
 #include "utils.h"
 
+#define THRNUM 10 //Number of threads used for crawling
+
 using std::cout; using std::cin; using std::endl;
 using std::thread;
 
-void doWork(unordered_set<string>& urls, queue<uri>& todo, uri actual)
+void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 {
-	string url = actual.tostring();
+	string url;
+	string response;
+	uri actual;
+	bool oktoread;
+	bool download;
+
 	lock.lock();
-	cout << todo.size() << " >> " << url << endl;
+		oktoread = !todo.empty();
 	lock.unlock();
-	string response = HTTPrequest(url);
-	crawl(response, urls, todo, &todo.front());
+
+	while (oktoread)
+	{
+		download = false;
+
+		lock.lock();
+			if (todo.front().domain == base.domain)
+			{
+				download = true;
+				actual = todo.front();
+				url = actual.tostring();
+				cout << todo.size() << " >> " << url << endl;
+			}
+			todo.pop();
+		lock.unlock();
+
+		response = HTTPrequest(url);
+		crawl(response, urls, todo, &actual);
+		
+		lock.lock();
+			oktoread = !todo.empty();
+		lock.unlock();
+	}
 }
 
 int main(void)
@@ -39,29 +67,16 @@ int main(void)
 
 	crawl(response, urls, todo, &base);
 
-	thread threads[3];
+	thread threads[THRNUM];
 
-	while (!todo.empty())
+	for (int i = 0; i < THRNUM; i++)
 	{
-		lock.lock();
-		if (todo.front().domain == base.domain)
-			threads[1] = std::thread(doWork, std::ref(urls), std::ref(todo), todo.front());
-		todo.pop();
-		lock.unlock();
-		lock.lock();
-		if (todo.front().domain == base.domain)
-			threads[2] = std::thread(doWork, std::ref(urls), std::ref(todo), todo.front());
-		todo.pop();
-		lock.unlock();
-		lock.lock();
-		if (todo.front().domain == base.domain)
-			threads[3] = std::thread(doWork, std::ref(urls), std::ref(todo), todo.front());
-		todo.pop();
-		lock.unlock();
+		threads[i] = std::thread(doWork, std::ref(urls), std::ref(todo), base);
+	}
 
-		threads[1].join();
-		threads[2].join();
-		threads[3].join();
+	for (int i = 0; i < THRNUM; i++)
+	{
+		threads[i].join();
 	}
 
 	cout << "\nEnded";
