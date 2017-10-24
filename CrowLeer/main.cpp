@@ -5,7 +5,7 @@
 #include "uri.h"
 #include "utils.h"
 
-#define THRNUM 10 //Number of threads used for crawling
+#define THRNUM 1 //Number of threads used for crawling
 
 using std::cout; using std::cin; using std::endl;
 using std::thread;
