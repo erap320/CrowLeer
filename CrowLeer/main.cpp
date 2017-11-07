@@ -46,16 +46,14 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 	}
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	string url;
 	int depth;
 	cout << "URL: ";
 	cin >> url;
 	url = validate(url);
-
-
-
+	
 	string response; //Contains HTTP response
 
 	response = HTTPrequest(url);

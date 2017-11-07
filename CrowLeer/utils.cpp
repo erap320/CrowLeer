@@ -100,6 +100,7 @@ int findhref(const string& response, int offset)
 	}
 }
 
+
 void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, uri* const parent)
 {
 	int pos; //Holds the position of the string searched for in the response
