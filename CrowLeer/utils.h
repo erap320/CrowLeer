@@ -33,3 +33,11 @@ void crawl(const string& response, unordered_set<string>& data, queue<uri>& todo
 
 //Fixes initial urls to make them uri parsing compliant
 string validate(string url);
+
+//Used to parse options from commadn line arguments
+struct option {
+	char symbol;
+	string value;
+};
+
+queue<option> getopt(int argc, char *argv[]);

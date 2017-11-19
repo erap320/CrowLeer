@@ -139,3 +139,27 @@ string validate(string url)
 		url = "http://" + url;
 	return url;
 }
+
+queue<option> getopt(int argc, char *argv[])
+{
+	queue<option> options;
+	option tempopt;
+
+	for (int i = 1; i < argc; i++)
+	{
+		if (argv[i][0] == '-')
+		{
+			if (argv[i][2] == '\0')
+			{
+				tempopt.symbol = argv[i][1];
+			}
+
+		}
+		else
+		{
+			cout << "Command line argument error: expected option but got " << argv[i] << "instead" << endl;
+			return options;
+		}
+		options.push(tempopt);
+	}
+}
