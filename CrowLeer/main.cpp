@@ -54,57 +54,80 @@ int main(int argc, char *argv[])
 	//Number of threads used for crawling initialized with its default value
 	int thrnum = 10;
 
-	while ((opt = getopt(argc, argv, ":t:")) != -1)
+	//Variables to initialize
+	string url;
+	int depth;
+
+	//Command argument options acquisition and management
+	while ((opt = getopt(argc, argv, ":hu:t:d:")) != -1)
 	{
 		switch (opt)
 		{
+		case 'h':
+			cout << "CrowLeer v0.1\nFast and reliable CLI web crawler\n\nUsage: crowleer [hutd]\n\nOptions:\n  -h\tView this help page\n  -u\tURL used to start crawling\n  -t\tNumber of threads used\n  -d\tMaximum crawling depth" << endl;
+			cin.get();
+			return 0;
+			break;
+		case 'u':
+			cout << "Selected URL: " << optarg << endl;
+			url.append(optarg);
+			break;
 		case 't':
+			cout << "Threads number: " << optarg << endl;
 			thrnum = atoi(optarg);
 			break;
-		default: 
-			cout << "Arguments error" << endl;
+		case 'd':
+			cout << "Maximum depth: " << optarg << endl;
+			depth = atoi(optarg);
+			break;
+		case ':':
+			cout << "Missing value for option -" << (char)optopt  << endl;
+			cin.get();
+			return 0;
+			break;
+		case '?':
+		default:
+			cout << "Unknown option -" << (char)optopt << endl;
 			cin.get();
 			return 0;
 			break;
 		}
-
-		for (index = optind; index < argc; index++)
-			cout << "Default argument: " << argv[index] << endl;
 	}
 
-	cout << "Thread number: " << thrnum << endl;
+	if (url.empty())
+	{
+		cout << "URL: ";
+		cin >> url;
+	}
 
+	cout << endl;
 
-	//string url;
-	//int depth;
-	//cout << "URL: ";
-	//cin >> url;
-	//url = validate(url);
-	//
-	//string response; //Contains HTTP response
+	url = validate(url);
+	
+	string response; //Contains HTTP response
 
-	//response = HTTPrequest(url);
+	response = HTTPrequest(url);
 
-	//uri base(url);
+	uri base(url);
 
-	//unordered_set<string> urls; //Hash table which contains the URLs found in the response
-	//queue<uri> todo; //Queue containing the urls left to crawl
+	unordered_set<string> urls; //Hash table which contains the URLs found in the response
+	queue<uri> todo; //Queue containing the urls left to crawl
 
-	//crawl(response, urls, todo, &base);
+	crawl(response, urls, todo, &base);
 
-	//thread threads[THRNUM];
+	thread *threads = new thread[thrnum];
 
-	//for (int i = 0; i < THRNUM; i++)
-	//{
-	//	threads[i] = std::thread(doWork, std::ref(urls), std::ref(todo), base);
-	//}
+	for (int i = 0; i < thrnum; i++)
+	{
+		threads[i] = std::thread(doWork, std::ref(urls), std::ref(todo), base);
+	}
 
-	//for (int i = 0; i < THRNUM; i++)
-	//{
-	//	threads[i].join();
-	//}
+	for (int i = 0; i < thrnum; i++)
+	{
+		threads[i].join();
+	}
 
-	//cout << "\nEnded";
+	cout << "\nEnded";
 
 	cin.ignore();
 	cin.get();
