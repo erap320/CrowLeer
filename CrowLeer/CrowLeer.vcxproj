@@ -127,6 +127,7 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="getopt.h" />
     <ClInclude Include="uri.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

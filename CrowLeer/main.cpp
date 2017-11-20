@@ -4,8 +4,7 @@
 //Other project headers
 #include "uri.h"
 #include "utils.h"
-
-#define THRNUM 10 //Number of threads used for crawling
+#include "getopt.h"
 
 using std::cout; using std::cin; using std::endl;
 using std::thread;
@@ -48,6 +47,34 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 int main(int argc, char *argv[])
 {
+	//Variable for the command line options management
+	char opt;
+	int index;
+
+	//Number of threads used for crawling initialized with its default value
+	int thrnum = 10;
+
+	while ((opt = getopt(argc, argv, ":t:")) != -1)
+	{
+		switch (opt)
+		{
+		case 't':
+			thrnum = atoi(optarg);
+			break;
+		default: 
+			cout << "Arguments error" << endl;
+			cin.get();
+			return 0;
+			break;
+		}
+
+		for (index = optind; index < argc; index++)
+			cout << "Default argument: " << argv[index] << endl;
+	}
+
+	cout << "Thread number: " << thrnum << endl;
+
+
 	//string url;
 	//int depth;
 	//cout << "URL: ";
@@ -78,21 +105,6 @@ int main(int argc, char *argv[])
 	//}
 
 	//cout << "\nEnded";
-
-	queue<option> options = getopt(argc, argv);
-	if (!options.empty)
-	{
-		while (!options.empty)
-		{
-			cout << options.front().symbol << " " << options.front().value << endl;
-			options.pop();
-		}
-	}
-	else
-	{
-		cout << "Options error, aborting" << endl;
-		return 1;
-	}
 
 	cin.ignore();
 	cin.get();
