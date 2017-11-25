@@ -1,6 +1,8 @@
 #include "utils.h"
 #include "uri.h"
 
+#include "color.h"
+
 #include <iostream>
 #include <fstream>
 
@@ -46,9 +48,11 @@ string HTTPrequest(string url)
 		res = curl_easy_perform(curl);
 		if (res != CURLE_OK)
 		{
-			cout << ">> Network Error: " << curl_easy_strerror(res) << "\n";
-			cin.clear();
-			cin.get();
+			lock.lock();
+			Color('r');
+			cout << ">> Network Error: " << curl_easy_strerror(res) << " on " << url << "\n";
+			Color('w');
+			lock.unlock();
 		}
 
 		//CURL cleanup

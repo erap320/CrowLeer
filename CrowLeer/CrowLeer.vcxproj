@@ -122,11 +122,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="conditions.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="uri.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="color.h" />
+    <ClInclude Include="conditions.h" />
     <ClInclude Include="getopt.h" />
     <ClInclude Include="uri.h" />
     <ClInclude Include="utils.h" />

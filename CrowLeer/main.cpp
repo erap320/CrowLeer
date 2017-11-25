@@ -36,8 +36,11 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 			todo.pop();
 		lock.unlock();
 
-		response = HTTPrequest(url);
-		crawl(response, urls, todo, &actual);
+		if (download)
+		{
+			response = HTTPrequest(url);
+			crawl(response, urls, todo, &actual);
+		}
 		
 		lock.lock();
 			oktoread = !todo.empty();

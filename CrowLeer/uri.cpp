@@ -96,7 +96,7 @@ uri parse(string str, uri* const parent)
 	string relative=""; //Holds relative paths informations
 
 	//Relative path
-	if (str[0] == '\\' || str[0] == '.' || str[0]=='/')
+	if (str[0] == '\\' || str[0] == '.' || (str[0]=='/' && str[1]!='/') )
 	{
 		relative = str[0];
 		str.erase(0, 1);
