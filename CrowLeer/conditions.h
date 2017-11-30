@@ -4,6 +4,7 @@
 using std::regex;
 
 class rule {
+public:
 	regex protocol;
 	regex domain;
 	regex path;

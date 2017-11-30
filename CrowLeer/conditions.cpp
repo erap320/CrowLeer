@@ -2,11 +2,11 @@
 
 rule::rule()
 {
-	regex protocol;
-	regex domain;
-	regex path;
-	regex filename;
-	regex extension;
-	regex querystring;
-	regex anchor;
+	this->protocol = ".*";
+	this->domain = ".*";
+	this->path = ".*";
+	this->filename = ".*";
+	this->extension = ".*";
+	this->querystring = ".*";
+	this->anchor = ".*";
 }

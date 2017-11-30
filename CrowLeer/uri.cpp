@@ -1,8 +1,10 @@
 #include "uri.h"
+#include "conditions.h"
 
 #include <iostream>
 
 using std::cout; using std::endl;
+using std::regex_match;
 
 uri uri::operator=(const uri& other)
 {
@@ -244,10 +246,19 @@ uri parse(string str, uri* const parent)
 	return temp;
 }
 
-bool check(rule r) {
-	return true;
+bool uri::check(rule r) {
+	bool result = false;
+	result = result && regex_match(this->protocol, r.protocol);
+	result = result && regex_match(this->domain, r.domain);
+	result = result && regex_match(this->path, r.path);
+	result = result && regex_match(this->filename, r.filename);
+	result = result && regex_match(this->extension, r.extension);
+	result = result && regex_match(this->querystring, r.querystring);
+	result = result && regex_match(this->anchor, r.anchor);
+
+	return result;
 }
 
-bool check(regex r) {
-	return true;
+bool uri::check(regex r) {
+	return regex_match(this->tostring(), r);
 }
