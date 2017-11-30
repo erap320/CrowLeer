@@ -23,7 +23,7 @@ std::string HTTPrequest(std::string url);
 void debug_out(const unordered_set<string>& data);
 
 //Save string in file
-bool debug_file(const string& str, string path);
+bool out_file(const string& str, string path);
 
 //Finds the position of the next valid "href" string, that leads to a real URL
 int findhref(const string& response, int offset);

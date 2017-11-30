@@ -30,11 +30,14 @@ void uri::debug()
 }
 
 uri::uri()
-{}
+{
+	this->depth = 0;
+}
 
 uri::uri(string str)
 {
 	*this = parse(str);
+	this->depth = 0;
 }
 
 string uri::tostring()
@@ -247,7 +250,7 @@ uri parse(string str, uri* const parent)
 }
 
 bool uri::check(rule r) {
-	bool result = false;
+	bool result = true;
 	result = result && regex_match(this->protocol, r.protocol);
 	result = result && regex_match(this->domain, r.domain);
 	result = result && regex_match(this->path, r.path);

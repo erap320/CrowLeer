@@ -15,6 +15,9 @@ public:
 	string querystring;
 	string anchor;
 
+	//Number of files crawled to get to get to this uri
+	unsigned int depth;
+
 	uri operator=(const uri& other);
 	void debug();
 	uri();

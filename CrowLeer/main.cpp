@@ -9,13 +9,13 @@
 using std::cout; using std::cin; using std::endl;
 using std::thread;
 
-void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
+void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base, rule crawlCondition)
 {
 	string url;
 	string response;
 	uri actual;
 	bool oktoread;
-	bool download;
+	bool follow;
 
 	lock.lock();
 		oktoread = !todo.empty();
@@ -23,12 +23,12 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 	while (oktoread)
 	{
-		download = false;
+		follow = false;
 
 		lock.lock();
-			if (todo.front().domain == base.domain)
+			if (todo.front().check(crawlCondition))
 			{
-				download = true;
+				follow = true;
 				actual = todo.front();
 				url = actual.tostring();
 				cout << todo.size() << " >> " << url << endl;
@@ -36,7 +36,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 			todo.pop();
 		lock.unlock();
 
-		if (download)
+		if (follow)
 		{
 			response = HTTPrequest(url);
 			crawl(response, urls, todo, &actual);
@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
 	//Variables to initialize
 	string url;
 	int depth;
+	rule crawlCondition //conditions to choose what to crawl
 
 	//Command argument options acquisition and management
 	while ((opt = getopt(argc, argv, ":hu:t:d:")) != -1)

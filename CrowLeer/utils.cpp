@@ -70,7 +70,7 @@ void debug_out(const unordered_set<string>& data)
 	}
 }
 
-bool debug_file(const string& str, string path)
+bool out_file(const string& str, string path)
 {
 	ofstream out(path);
 	if (!out.is_open())
