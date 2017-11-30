@@ -243,3 +243,11 @@ uri parse(string str, uri* const parent)
 
 	return temp;
 }
+
+bool check(rule r) {
+	return true;
+}
+
+bool check(regex r) {
+	return true;
+}

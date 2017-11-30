@@ -1,4 +1,6 @@
 #pragma once
+
+#include "conditions.h"
 #include <string>
 
 using std::string;
@@ -22,6 +24,10 @@ public:
 
 	//Return the uri in a string format made by putting together its components
 	string tostring();
+
+	//Check if the uri respects the rules defined by regex
+	bool check(rule r); //With a rule type on each component
+	bool check(regex r); //With a global rule to the generated URL string
 };
 
 //Remove every space character from string
