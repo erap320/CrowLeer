@@ -55,16 +55,33 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 int main(int argc, char *argv[])
 {
 	//Variable for the command line options management
-	char opt;
-	int index;
+	char opt=0;
 
-	//Command argument options acquisition and management
-	while ((opt = getopt(argc, argv, ":hu:t:d:")) != -1)
+	/* getopt_long stores the option index here. */
+	static struct option long_options[] =
 	{
+		{ "help",		no_argument,		0,	'h' },
+		{ "url",		required_argument,	0,	'u' },
+		{ "threads",	required_argument,	0,	't' },
+		{ "depth",		required_argument,	0,	'd' },
+		{ 0, 0, 0, 0 }
+	};
+
+	while (opt != -1)
+	{
+		int option_index = 0;
+
+		opt = getopt_long(argc, argv, "hu:t:d:",
+			long_options, &option_index);
+
+		/* Detect the end of the options. */
+		if (opt == -1)
+			break;
+
 		switch (opt)
 		{
 		case 'h':
-			cout << "CrowLeer v0.1\nFast and reliable CLI web crawler\n\nUsage: crowleer [hutd]\n\nOptions:\n  -h\tView this help page\n  -u\tURL used to start crawling\n  -t\tNumber of threads used\n  -d\tMaximum crawling depth" << endl;
+			cout << "CrowLeer v0.1\nFast and reliable CLI web crawler\n\nUsage: crowleer [options]\n\nOptions:\n  -h --help\tView this help page\n  -u --url\tURL used to start crawling\n  -t --thread\tNumber of threads used\n  -d --depth\tMaximum crawling depth" << endl;
 			cin.get();
 			return 0;
 			break;
@@ -81,16 +98,15 @@ int main(int argc, char *argv[])
 			maxdepth = atoi(optarg);
 			break;
 		case ':':
-			cout << "Missing value for option -" << (char)optopt  << endl;
+			cout << "Missing value for option -" << (char)optopt << endl;
 			cin.get();
 			return 0;
 			break;
+
 		case '?':
 		default:
-			cout << "Unknown option -" << (char)optopt << endl;
-			cin.get();
+			cin.ignore();
 			return 0;
-			break;
 		}
 	}
 
