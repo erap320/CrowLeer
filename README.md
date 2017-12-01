@@ -1,8 +1,6 @@
 CrowLeer, the Fast and reliable CLI web crawler
 
-
-
-##Options:
+#Options:
 
 *-h --help\tView this help page
 *-u --url\tURL used to start crawling
@@ -11,7 +9,7 @@ CrowLeer, the Fast and reliable CLI web crawler
 
 
 
-##Rules:
+#Rules:
 
 CrowLeer uses Regular Expressions (https://en.wikipedia.org/wiki/Regular_expression) to apply conditions to URLs or parts of URLs.
 
@@ -26,7 +24,7 @@ If not specified every rule is set to match anything. You can set every possible
 
 
 
-##URLs:
+#URLs:
 
 CrowLeer completes the URLs found in the crawled pages to make its and your work easier.
 
