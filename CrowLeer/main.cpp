@@ -6,6 +6,8 @@
 #include "utils.h"
 #include "getopt.h"
 
+#define HELP_MSG "CrowLeer v0.1\nFast and reliable CLI web crawler\n\n>>USAGE: crowleer [options]\n\n>>OPTIONS:\n  -h --help\tView this help page\n  -u --url\tURL used to start crawling\n  -t --thread\tNumber of threads used\n  -d --depth\tMaximum crawling depth\n\n>>RULES:\nCrowLeer uses Regular Expressions (https://en.wikipedia.org/wiki/Regular_expression) to apply conditions to URLs or parts of URLs.\nBoth rules have a global component, that matches the Completed URL (see the URL section) and one for every URL part.\nThere are two rules: Follow Rule and Save Rule.\n  - Follow Rule: describes pages to follow while crawling\n  - Save Rule: describes pages to download and save locally\nIf not specified every rule is set to match everything. You can set every possible composition of rules to describe the exact scenario you need, including global rule and parts rules together.\n\n>>URLs:\nCrowLeer completes the URLs found in the crawled pages to make its and your work easier.\nEvery URL is split in parts and completed with parts from the URL of the page it was found in if necessary.\nThe parts in which a URL is split are: protocol, domain, path, filename, extension, querystring and anchor.\n\nExample: the URL \"/example/one/file.txt\" was found while running on \"https://erap.space\"\n  The Completed URL will be \"https://erap.space/example/one/file.txt\", and its parts will be:\n  - protocol: \"https\"\n  - domain: \"erap.space\"\n  - path: \"example/one\"\n  - filename: \"file\"\n  - extension: \"txt\"\n  - querystring: \"\"\n  - anchor: \"\"\n\nExample: the URL \"https://en.wikipedia.org/wiki/Dog?s=canis#Origin\" will be split in parts this way:\n  - protocol: \"https\"\n  - domain: \"en.wikipedia.org\"\n  - path: \"wiki/Dog\"\n  - filename: \"\"\n  - extension: \"\"\n  - querystring: \"s=canis\"\n  - anchor: \"Origin\""
+
 using std::cout; using std::cin; using std::endl;
 using std::thread;
 
@@ -81,7 +83,7 @@ int main(int argc, char *argv[])
 		switch (opt)
 		{
 		case 'h':
-			cout << "CrowLeer v0.1\nFast and reliable CLI web crawler\n\nUsage: crowleer [options]\n\nOptions:\n  -h --help\tView this help page\n  -u --url\tURL used to start crawling\n  -t --thread\tNumber of threads used\n  -d --depth\tMaximum crawling depth" << endl;
+			cout << "\n\n" << HELP_MSG << endl;
 			cin.get();
 			return 0;
 			break;
@@ -109,6 +111,16 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 	}
+	if (optind < argc)
+    {
+		cout << "Illegal non-option arguments: ";
+		while (optind < argc)
+			cout << argv[optind++] << " ";
+		cout << "\n\n" << HELP_MSG << endl;
+		cin.get();
+		return 0;
+    }
+
 
 	if (url.empty())
 	{
