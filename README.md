@@ -1,13 +1,13 @@
-CrowLeer, the Fast and reliable CLI web crawler
+# CrowLeer, the Fast and reliable CLI web crawler
 
-####Options:
+## Options:
 
 *-h --help\tView this help page
 *-u --url\tURL used to start crawling
 *-t --thread\tNumber of threads used
 *-d --depth\tMaximum crawling depth
 
-####Rules:
+## Rules:
 
 CrowLeer uses Regular Expressions (https://en.wikipedia.org/wiki/Regular_expression) to apply conditions to URLs or parts of URLs.
 
@@ -20,15 +20,13 @@ There are two rules: Follow Rule and Save Rule.
 
 If not specified every rule is set to match anything. You can set every possible composition of rules to describe the exact scenario you need, including global rule and parts rules together.
 
-####URLs:
+## URLs:
 
 CrowLeer completes the URLs found in the crawled pages to make its and your work easier.
 
 Every URL is split in parts and completed with parts from the URL of the page it was found in if necessary.
 
 The parts in which a URL is split are: protocol, domain, path, filename, extension, querystring and anchor.
-
-
 
 **Example**: the URL ```"/example/one/file.txt"``` was found while running on ```"https://erap.space"```
 
