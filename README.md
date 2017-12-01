@@ -36,24 +36,26 @@ The URL ```"/example/one/file.txt"``` was found while running on ```"https://era
 
 The Completed URL will be ```"https://erap.space/example/one/file.txt"```, and its parts will be:
 
-* protocol: ```"https"```
-* domain: ```"erap.space"```
-* path: ```"example/one"```
-* filename: ```"file"```
-* extension: ```"txt"```
-* querystring: ```""```
-* anchor: ```""```
-
-
+| Part        | Value         |
+|-------------|---------------|
+| protocol    | "https"       |
+| domain      | "erap.space"  |
+| path        | "example/one" |
+| filename    | "file"        |
+| extension   | "txt"         |
+| querystring | ""            |
+| anchor      | ""            |
 
 #### Example
 
 The URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split in parts this way:
 
-* protocol: ```"https"```
-* domain: ```"en.wikipedia.org"```
-* path: ```"wiki/Dog"```
-* filename: ```""```
-* extension: ```""```
-* querystring: ```"s=canis"```
-* anchor: ```"Origin"```
+| Part        | Value              |
+|-------------|--------------------|
+| protocol    | "https"            |
+| domain      | "en.wikipedia.org" |
+| path        | "wiki/Dog"         |
+| filename    | ""                 |
+| extension   | ""                 |
+| querystring | "s=canis"          |
+| anchor      | "Origin"           |
