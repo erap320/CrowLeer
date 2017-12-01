@@ -34,7 +34,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 			if (oktoread)
 			{
 				current = todo.front();
-				if (current.check(crawlCondition) && (maxdepth==0 ? true : (current.depth <= maxdepth)) )
+				if (current.check(crawlCondition) && (maxdepth==0 ? true : (current.depth<=maxdepth)) )
 				{
 					follow = true;
 					url = current.tostring();
@@ -54,9 +54,6 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 int main(int argc, char *argv[])
 {
-	//debug code
-	crawlCondition.domain = "erap\.space|.*sourceforge.*";
-
 	//Variable for the command line options management
 	char opt;
 	int index;
@@ -130,7 +127,7 @@ int main(int argc, char *argv[])
 		threads[i].join();
 	}
 
-	cout << "\nEnded";
+	cout << "\nCrawling completed";
 
 	cin.ignore();
 	cin.get();

@@ -5,6 +5,7 @@ using std::regex;
 
 class rule {
 public:
+	//Rules for different parts fo the uri
 	regex protocol;
 	regex domain;
 	regex path;
@@ -12,6 +13,9 @@ public:
 	regex extension;
 	regex querystring;
 	regex anchor;
+
+	//Rule to match the .tostring() of the uri
+	regex global;
 
 	rule();
 };

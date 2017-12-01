@@ -15,6 +15,7 @@ uri uri::operator=(const uri& other)
 	this->extension = other.extension;
 	this->querystring = other.querystring;
 	this->anchor = other.anchor;
+	this->depth = other.depth;
 	return *this;
 }
 
@@ -99,6 +100,11 @@ uri parse(string str, uri* const parent)
 	str = trim(str);
 
 	string relative=""; //Holds relative paths informations
+
+	if (parent != nullptr)
+	{
+		temp.depth = parent->depth + 1;
+	}
 
 	//Relative path
 	if (str[0] == '\\' || str[0] == '.' || (str[0]=='/' && str[1]!='/') )
@@ -247,11 +253,6 @@ uri parse(string str, uri* const parent)
 		str.clear();
 	}
 
-	if (parent != nullptr)
-	{
-		temp.depth = parent->depth++;
-	}
-
 	return temp;
 }
 
@@ -264,6 +265,8 @@ bool uri::check(rule r) {
 	result = result && regex_match(this->extension, r.extension);
 	result = result && regex_match(this->querystring, r.querystring);
 	result = result && regex_match(this->anchor, r.anchor);
+	
+	result = result && regex_match(this->tostring(), r.global);
 
 	return result;
 }

@@ -127,6 +127,10 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 			auto search = urls.find(temp.tostring());
 			if (search == urls.end())
 			{
+				/*if(temp.domain=="sourceforge.net")
+				{
+					cout << temp.debugdata << endl;
+				}*/
 				urls.insert(temp.tostring());
 				todo.push(temp);
 			}

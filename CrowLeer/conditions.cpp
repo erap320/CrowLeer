@@ -9,4 +9,6 @@ rule::rule()
 	this->extension = ".*";
 	this->querystring = ".*";
 	this->anchor = ".*";
+
+	this->global = ".*";
 }
