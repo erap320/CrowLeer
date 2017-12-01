@@ -9,58 +9,57 @@
 using std::cout; using std::cin; using std::endl;
 using std::thread;
 
-void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base, rule crawlCondition)
+//Number of threads used for crawling initialized with its default value
+int thrnum = 10;
+
+//Variables to initialize
+string url;
+int maxdepth = 0;
+rule crawlCondition; //conditions to choose what to crawl
+
+void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 {
 	string url;
 	string response;
-	uri actual;
-	bool oktoread;
+	uri current;
+	bool oktoread = true;
 	bool follow;
-
-	lock.lock();
-		oktoread = !todo.empty();
-	lock.unlock();
 
 	while (oktoread)
 	{
 		follow = false;
 
-		lock.lock();
-			if (todo.front().check(crawlCondition))
+		queueMutex.lock();
+			oktoread = !todo.empty();
+			if (oktoread)
 			{
-				follow = true;
-				actual = todo.front();
-				url = actual.tostring();
-				cout << todo.size() << " >> " << url << endl;
+				current = todo.front();
+				if (current.check(crawlCondition) && (maxdepth==0 ? true : (current.depth <= maxdepth)) )
+				{
+					follow = true;
+					url = current.tostring();
+					cout << todo.size() << " >> " << url << " : " << current.depth << endl;
+				}
+				todo.pop();
 			}
-			todo.pop();
-		lock.unlock();
+		queueMutex.unlock();
 
 		if (follow)
 		{
 			response = HTTPrequest(url);
-			crawl(response, urls, todo, &actual);
+			crawl(response, urls, todo, &current);
 		}
-		
-		lock.lock();
-			oktoread = !todo.empty();
-		lock.unlock();
 	}
 }
 
 int main(int argc, char *argv[])
 {
+	//debug code
+	crawlCondition.domain = "erap\.space|.*sourceforge.*";
+
 	//Variable for the command line options management
 	char opt;
 	int index;
-
-	//Number of threads used for crawling initialized with its default value
-	int thrnum = 10;
-
-	//Variables to initialize
-	string url;
-	int depth;
-	rule crawlCondition //conditions to choose what to crawl
 
 	//Command argument options acquisition and management
 	while ((opt = getopt(argc, argv, ":hu:t:d:")) != -1)
@@ -82,7 +81,7 @@ int main(int argc, char *argv[])
 			break;
 		case 'd':
 			cout << "Maximum depth: " << optarg << endl;
-			depth = atoi(optarg);
+			maxdepth = atoi(optarg);
 			break;
 		case ':':
 			cout << "Missing value for option -" << (char)optopt  << endl;

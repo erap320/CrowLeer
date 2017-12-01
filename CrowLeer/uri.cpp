@@ -129,7 +129,6 @@ uri parse(string str, uri* const parent)
 	//Domain
 	if (relative.empty())
 	{
-
 		pos = str.find("//");
 		if (pos != string::npos)
 		{
@@ -244,6 +243,11 @@ uri parse(string str, uri* const parent)
 	{
 		temp.anchor = str.substr(1);
 		str.clear();
+	}
+
+	if (parent != nullptr)
+	{
+		temp.depth = parent->depth++;
 	}
 
 	return temp;

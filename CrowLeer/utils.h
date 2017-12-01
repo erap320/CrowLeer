@@ -11,7 +11,7 @@ using std::unordered_set;
 using std::queue;
 using std::mutex;
 
-extern mutex lock;
+extern mutex queueMutex;
 
 //Function used by CURL to add chunks of data to the response string
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);

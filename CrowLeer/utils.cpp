@@ -14,7 +14,7 @@
 using std::cout; using std::cin;  using std::endl;
 using std::ofstream;
 
-mutex lock;
+mutex queueMutex;
 
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
@@ -48,11 +48,11 @@ string HTTPrequest(string url)
 		res = curl_easy_perform(curl);
 		if (res != CURLE_OK)
 		{
-			lock.lock();
-			Color('r');
-			cout << ">> Network Error: " << curl_easy_strerror(res) << " on " << url << "\n";
-			Color('w');
-			lock.unlock();
+			queueMutex.lock();
+				Color('r');
+				cout << ">> Network Error: " << curl_easy_strerror(res) << " on " << url << "\n";
+				Color('w');
+			queueMutex.unlock();
 		}
 
 		//CURL cleanup
@@ -120,15 +120,17 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 		after = response.find(response[before], before + 1);
 		extracted = response.substr(before + 1, after - before - 1);
 
-		lock.lock();
+
+		queueMutex.lock();
 			//Add only if never found before
 			auto search = urls.find(extracted);
 			if (search == urls.end())
 			{
 				urls.insert(extracted);
-				todo.push(parse(extracted,parent));
+				temp = parse(extracted, parent);
+				todo.push(temp);
 			}
-		lock.unlock();
+		queueMutex.unlock();
 
 		pos = findhref(response, after + 1);
 	}
