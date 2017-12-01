@@ -1,11 +1,13 @@
-# CrowLeer, the Fast and reliable CLI web crawler
+# CrowLeer, the fast and reliable CLI web crawler
 
 ## Options:
 
-*-h --help\tView this help page
-*-u --url\tURL used to start crawling
-*-t --thread\tNumber of threads used
-*-d --depth\tMaximum crawling depth
+| Option      | Descritpion                                                            |
+|-------------|------------------------------------------------------------------------|
+|  -h --help  | View this help page                                                    |
+| -u --url    | URL used to start crawling                                             |
+| -t --thread | Number of threads used                                                 |
+| -d --depth  | Maximum crawling depth (the starting URL spcified in -u is at depth 0) |
 
 ## Rules:
 
