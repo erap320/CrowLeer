@@ -28,7 +28,9 @@ Every URL is split in parts and completed with parts from the URL of the page it
 
 The parts in which a URL is split are: protocol, domain, path, filename, extension, querystring and anchor.
 
-**Example**: the URL ```"/example/one/file.txt"``` was found while running on ```"https://erap.space"```
+#### Example
+
+The URL ```"/example/one/file.txt"``` was found while running on ```"https://erap.space"```
 
 The Completed URL will be ```"https://erap.space/example/one/file.txt"```, and its parts will be:
 
@@ -42,7 +44,9 @@ The Completed URL will be ```"https://erap.space/example/one/file.txt"```, and i
 
 
 
-**Example**: the URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split in parts this way:
+#### Example
+
+The URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split in parts this way:
 
 * protocol: ```"https"```
 * domain: ```"en.wikipedia.org"```
