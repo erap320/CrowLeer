@@ -122,12 +122,12 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 
 
 		queueMutex.lock();
+			temp = parse(extracted, parent);
 			//Add only if never found before
-			auto search = urls.find(extracted);
+			auto search = urls.find(temp.tostring());
 			if (search == urls.end())
 			{
-				urls.insert(extracted);
-				temp = parse(extracted, parent);
+				urls.insert(temp.tostring());
 				todo.push(temp);
 			}
 		queueMutex.unlock();

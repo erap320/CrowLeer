@@ -154,7 +154,7 @@ uri parse(string str, uri* const parent)
 	else if(parent != nullptr)
 	{
 		temp.domain = parent->domain;
-		if (relative == ".")
+		if (relative == "." || relative == "/")
 			temp.path = parent->path;
 		else if (relative == "..")
 		{
@@ -180,7 +180,7 @@ uri parse(string str, uri* const parent)
 		temp.filename = str.substr(0, pos);
 		str.erase(0, pos + 1);
 	}
-	else if(temp.path.empty()) //Check back for missed Path
+	else //Check back for missed Path
 	{
 		pos = str.find_first_of("?#");
 		if(pos != string::npos)
@@ -206,16 +206,18 @@ uri parse(string str, uri* const parent)
 			return temp;
 		}
 	}
-	else if(str.length() > 0 && !temp.path.empty()) //Check back for missed Path
+	else if(str.length() > 0) //Check back for missed Path
 	{
+		if (!temp.path.empty())
+			temp.path += "/";
 		if (pos != string::npos)
 		{
-			temp.path += "/"+str.substr(0, pos);
+			temp.path += str.substr(0, pos);
 			str.erase(0, pos);
 		}
 		else
 		{
-			temp.path += "/"+str;
+			temp.path += str;
 			str.clear();
 			return temp;
 		}
