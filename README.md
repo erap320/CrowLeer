@@ -1,4 +1,4 @@
-# CrowLeer, the fast and reliable CLI web crawler
+# CrowLeer, the fast and reliable CLI web crawler with focus on pages download
 
 ## Options:
 
