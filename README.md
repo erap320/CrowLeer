@@ -2,17 +2,18 @@
 
 ## Options:
 
-| -h --help                                                                               | View this help page                                                                             |
-|-----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| -u --url                                                                                | URL used to start crawling                                                                      |
-| -t --threads                                                                            | Number of threads used                                                                          |
-| -d --depth                                                                              | Maximum crawling depth (the starting URL spcified in -u is at depth 0)                          |
-| -x --same-domain                                                                        | Forces to follow only URLs with the same domain as the starting URL                             |
-| -a --save                                                                               | Activates the download functionality of CrowLeer. If not used nothing will be saved on the disk |
-| --f-global                                                                              | Follow rule to be tested on the whole parsed URL                                                |
-| --f-protocol --f-domain --f-path --f--filename --f-extension --f-querystring --f-anchor | Follow rules on single parts of parsed URLs                                                     |
-| --s-global                                                                              | Save rule to be tested on the whole parsed URL                                                  |
-| --s-protocol --s-domain --s-path --s--filename --s-extension --s-querystring --s-anchor | Save rules on single parts of parsed URLs                                                       |
+| Option                                                                                  | Description                                                                                              |
+|-----------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| -h --help                                                                               | View this help page                                                                                      |
+| -u --url                                                                                | URL used to start crawling                                                                               |
+| -t --threads                                                                            | Number of threads used                                                                                   |
+| -d --depth                                                                              | Maximum crawling depth (the starting URL spcified in -u is at depth 0)                                   |
+| -x --same-domain                                                                        | Quick flag to only follow URLs with the same domain as the starting URL, overrides the --f-domain option |
+| -a --save                                                                               | Activates the download functionality of CrowLeer. If not used nothing will be saved on the disk          |
+| --f-global                                                                              | Follow rule to be tested on the whole parsed URL                                                         |
+| --f-protocol --f-domain --f-path --f--filename --f-extension --f-querystring --f-anchor | Follow rules on single parts of parsed URLs                                                              |
+| --s-global                                                                              | Save rule to be tested on the whole parsed URL                                                           |
+| --s-protocol --s-domain --s-path --s--filename --s-extension --s-querystring --s-anchor | Save rules on single parts of parsed URLs                                                                |
 
 ## Rules:
 
