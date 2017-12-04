@@ -1,0 +1,135 @@
+@font-face {
+font-family: 'Roboto';
+src:
+    local('Roboto Lt'),
+    url('Roboto-Light.ttf');
+}
+
+body{
+	font-family: Roboto, Verdana, Tahoma, Aharoni, Helvetica;
+	font-weight: bold;
+	color: white;
+	background-color: #2D2D2D;
+}
+
+#animu img{
+	position: absolute;
+	height: 45%;
+    right: 10%;
+    bottom: 0;
+}
+
+#signup a{
+	position: absolute;
+    left: 15px;
+    bottom: 15px;
+	width: auto;
+	background-color: rgba(0, 0, 0, .4);
+	border-radius: 6px;
+    text-decoration: none;
+	text-align: center;
+	font-size: 15pt;
+	padding: 5px;
+}
+
+#signup a:hover{
+	background-color: rgba(0, 0, 0, .8);
+}
+
+#wrapper{
+	position: absolute;
+	width: 100%;
+	top: 25%;
+	right: 0;
+	left: 0;
+}
+
+h1{
+	text-align: center;
+	font-size: 45pt;
+}
+
+h2{
+	text-align: center;
+	font-size: 30pt;
+}
+
+input{
+	background-color: rgba(0, 0, 0, .4);
+	border-radius: 6px;
+    text-decoration: none;
+    color: white;
+	width: 700px;
+	text-align: center;
+}
+
+.data{
+	border: none;
+}
+
+label{
+	font-size: 25pt;
+}
+
+a{
+	margin-top: 100px;
+	border-radius: 6px;
+    text-decoration: none;
+    color: white;
+	width: 700px;
+	text-align: center;
+}
+
+a:hover{
+	text-decoration: underline;
+}
+
+input:hover{
+	background-color: rgba(0, 0, 0, .8);
+}
+
+.menu input, .menu a{
+	font-size: 25pt;
+	margin-right: 65px;
+	padding: 10px;
+	display: block;
+}
+
+.menu{
+    float:right;
+    position:relative;
+    left:-50%;
+}
+.menu ul, table{
+    list-style-type: none;
+    position: relative;
+    left:50%;
+}
+
+.menu li{
+	float:left;
+	position:relative;
+	text-align: center;
+}
+
+#altervista a{
+	text-align: center;
+	font-size: 12pt;
+    padding: 4px;
+}
+
+#altervista{
+	position: absolute;
+    width: 50px;
+    height: 20px;
+    bottom: 2%;
+    right: 2%;
+    line-height: 20px;
+}
+
+p{
+	font-size: 25pt;
+	margin: auto;
+	text-align: center;
+	margin-top:20%;
+}

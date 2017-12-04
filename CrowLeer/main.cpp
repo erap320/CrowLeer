@@ -19,6 +19,7 @@ string url;
 int maxdepth = 0;
 rule followCondition; //conditions to choose what to crawl
 rule saveCondition; //condition to choose what to download
+bool save = false; //flag to activate the saving of files, changed with the -a option
 
 void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 {
@@ -27,6 +28,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 	uri current;
 	bool oktoread = true;
 	bool follow;
+	fs::path directory;
 
 	while (oktoread)
 	{
@@ -50,6 +52,25 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 		if (follow)
 		{
 			response = HTTPrequest(url);
+
+			/*if (current.check(saveCondition) && save)
+			{
+				directory = fs::current_path();
+				directory /= current.domain;
+				directory /= current.path;
+				if (!fs::exists(directory))
+					fs::create_directories(directory);
+				if (current.filename.empty())
+				{
+					
+				}
+				directory /= current.filename + "." + current.extension;
+				queueMutex.lock();
+				cout << directory.string() << endl;
+				queueMutex.unlock();
+				writeToDisk(response, directory);
+			}*/
+
 			crawl(response, urls, todo, &current);
 		}
 	}
@@ -57,6 +78,9 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 int main(int argc, char *argv[])
 {
+	//Condition to use the -s flag
+	bool sameDomain = false;
+
 	//Variable for the command line options management
 	char opt=0;
 
@@ -67,6 +91,8 @@ int main(int argc, char *argv[])
 		{ "url",			required_argument,	0,	'u' },
 		{ "threads",		required_argument,	0,	't' },
 		{ "depth",			required_argument,	0,	'd' },
+		{ "same-domain",	required_argument,	0,	'x' },
+		{ "save",			required_argument,	0,	'a' },
 		{ "f-global",		required_argument,	0,	'f' },
 		{ "f-protocol",		required_argument,	0,	'f' },
 		{ "f-domain",		required_argument,	0,	'f' },
@@ -75,14 +101,14 @@ int main(int argc, char *argv[])
 		{ "f-extension",	required_argument,	0,	'f' },
 		{ "f-querystring",	required_argument,	0,	'f' },
 		{ "f-anchor",		required_argument,	0,	'f' },
-		{ "g-global",		required_argument,	0,	'g' },
-		{ "g-protocol",		required_argument,	0,	'g' },
-		{ "g-domain",		required_argument,	0,	'g' },
-		{ "g-path",			required_argument,	0,	'g' },
-		{ "g-filename",		required_argument,	0,	'g' },
-		{ "g-extension",	required_argument,	0,	'g' },
-		{ "g-querystring",	required_argument,	0,	'g' },
-		{ "g-anchor",		required_argument,	0,	'g' },
+		{ "s-global",		required_argument,	0,	's' },
+		{ "s-protocol",		required_argument,	0,	's' },
+		{ "s-domain",		required_argument,	0,	's' },
+		{ "s-path",			required_argument,	0,	's' },
+		{ "s-filename",		required_argument,	0,	's' },
+		{ "s-extension",	required_argument,	0,	's' },
+		{ "s-querystring",	required_argument,	0,	's' },
+		{ "s-anchor",		required_argument,	0,	's' },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -90,7 +116,7 @@ int main(int argc, char *argv[])
 	{
 		int option_index = 0;
 
-		opt = getopt_long(argc, argv, "hu:t:d:f:g:",
+		opt = getopt_long(argc, argv, "hu:xat:d:f:s:",
 			long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -114,6 +140,14 @@ int main(int argc, char *argv[])
 		case 'd':
 			cout << "Maximum depth: " << optarg << endl;
 			maxdepth = atoi(optarg);
+			break;
+		case 'x':
+			sameDomain = true;
+			cout << "Same domain rule applied" << endl;
+			break;
+		case 'a':
+			save = true;
+			cout << "Activate Save rule applied" << endl;
 			break;
 		case 'f':
 			if (long_options[option_index].name == "f-global")
@@ -157,43 +191,43 @@ int main(int argc, char *argv[])
 				cout << "Anchor Follow rule: " << optarg << endl;
 			}
 			break;
-		case 'g':
-			if (long_options[option_index].name == "g-global")
+		case 's':
+			if (long_options[option_index].name == "s-global")
 			{
 				saveCondition.global = optarg;
 				cout << "Global Save rule: " << optarg << endl;
 			}
-			else if (long_options[option_index].name == "g-protocol")
+			else if (long_options[option_index].name == "s-protocol")
 			{
 				saveCondition.protocol = optarg;
 				cout << "Protocol save rule: " << optarg << endl;
 			}
-			else if (long_options[option_index].name == "g-domain")
+			else if (long_options[option_index].name == "s-domain")
 			{
 				saveCondition.domain = optarg;
 				cout << "Domain Save rule: " << optarg << endl;
 			}
-			else if (long_options[option_index].name == "g-path")
+			else if (long_options[option_index].name == "s-path")
 			{
 				saveCondition.path = optarg;
 				cout << "Path Save rule: " << optarg << endl;
 			}
-			else if (long_options[option_index].name == "g-filename")
+			else if (long_options[option_index].name == "s-filename")
 			{
 				saveCondition.filename = optarg;
 				cout << "Filename Save rule: " << optarg << endl;
 			}
-			else if (long_options[option_index].name == "g-extension")
+			else if (long_options[option_index].name == "s-extension")
 			{
 				saveCondition.extension = optarg;
 				cout << "Extension Save rule: " << optarg << endl;
 			}
-			else if (long_options[option_index].name == "g-querystring")
+			else if (long_options[option_index].name == "s-querystring")
 			{
 				saveCondition.querystring = optarg;
 				cout << "Querystring Save rule: " << optarg << endl;
 			}
-			else if (long_options[option_index].name == "g-anchor")
+			else if (long_options[option_index].name == "s-anchor")
 			{
 				saveCondition.anchor = optarg;
 				cout << "Anchor Save rule: " << optarg << endl;
@@ -235,6 +269,8 @@ int main(int argc, char *argv[])
 	response = HTTPrequest(url);
 
 	uri base(url);
+	if (sameDomain)
+		followCondition.domain = base.domain;
 
 	unordered_set<string> urls; //Hash table which contains the URLs found in the response
 	queue<uri> todo; //Queue containing the urls left to crawl
@@ -253,7 +289,7 @@ int main(int argc, char *argv[])
 		threads[i].join();
 	}
 
-	cout << "\nCrawling completed";
+	cout << "\nCrawling completed\n";
 
 	cin.ignore();
 	return 0;

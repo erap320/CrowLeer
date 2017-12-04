@@ -70,7 +70,7 @@ void debug_out(const unordered_set<string>& data)
 	}
 }
 
-bool out_file(const string& str, string path)
+bool writeToDisk(const string& str, fs::path path)
 {
 	ofstream out(path);
 	if (!out.is_open())

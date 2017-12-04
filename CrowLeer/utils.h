@@ -3,8 +3,11 @@
 #include <unordered_set>
 #include <queue>
 #include <mutex>
+#include <filesystem>
 
 #include "uri.h"
+
+namespace fs = std::tr2::sys;
 
 using std::string;
 using std::unordered_set;
@@ -23,7 +26,7 @@ std::string HTTPrequest(std::string url);
 void debug_out(const unordered_set<string>& data);
 
 //Save string in file
-bool out_file(const string& str, string path);
+bool writeToDisk(const string& str, fs::path path);
 
 //Finds the position of the next valid "href" string, that leads to a real URL
 int findhref(const string& response, int offset);
