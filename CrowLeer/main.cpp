@@ -127,7 +127,6 @@ int main(int argc, char *argv[])
 		{
 		case 'h':
 			cout << "\n\n" << HELP_MSG << endl;
-			cin.get();
 			return 0;
 			break;
 		case 'u':
@@ -271,7 +270,7 @@ int main(int argc, char *argv[])
 
 	uri base(url);
 	if (sameDomain)
-		followCondition.domain = base.domain;
+		followCondition.domain = std::regex_replace(base.domain, regex("\\."), "\\.");
 
 	unordered_set<string> urls; //Hash table which contains the URLs found in the response
 	queue<uri> todo; //Queue containing the urls left to crawl
