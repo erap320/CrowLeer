@@ -16,6 +16,9 @@ void Color(char c)
 	case 'r':
 		code = 0x0C;
 		break;
+	case 'g':
+		code = 0x0A;
+		break;
 	case 'w':
 	default:
 		code = 0x7;

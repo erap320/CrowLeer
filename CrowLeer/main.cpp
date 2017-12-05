@@ -28,6 +28,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 	uri current;
 	bool oktoread = true;
 	bool follow;
+	bool download;
 
 	while (oktoread)
 	{
@@ -48,11 +49,31 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 			}
 		queueMutex.unlock();
 
-		if (follow)
+		download = save && current.check(saveCondition);
+
+		//Save the file in the correct directory
+		if (follow || download)
 		{
 			response = HTTPrequest(url);
-			crawl(response, urls, todo, save, saveCondition, &current);
+
+			if (follow)
+				crawl(response, urls, todo, save, saveCondition, &current);
+			if (download)
+			{
+				fs::path directory;
+				directory = fs::current_path();
+				directory /= current.domain;
+				directory /= current.path;
+				if (!fs::exists(directory))
+					fs::create_directories(directory);
+				if (current.filename.empty())
+					directory /= "index.html";
+				else
+					directory /= current.filename + "." + current.extension;
+				writeToDisk(response, directory);
+			}
 		}
+
 	}
 }
 
@@ -229,7 +250,6 @@ int main(int argc, char *argv[])
 		while (optind < argc)
 			cout << argv[optind++] << " ";
 		cout << "\n\n" << HELP_MSG << endl;
-		cin.get();
 		return 0;
     }
 
@@ -255,6 +275,24 @@ int main(int argc, char *argv[])
 	unordered_set<string> urls; //Hash table which contains the URLs found in the response
 	queue<uri> todo; //Queue containing the urls left to crawl
 
+	cout << todo.size() << " >> " << url << " : " << base.depth << endl;
+
+	//Check if the starting url has to be saved
+	if (save && base.check(saveCondition))
+	{
+		fs::path directory;
+		directory = fs::current_path();
+		directory /= base.domain;
+		directory /= base.path;
+		if (!fs::exists(directory))
+			fs::create_directories(directory);
+		if (base.filename.empty())
+			directory /= "index.html";
+		else
+			directory /= base.filename + "." + base.extension;
+		writeToDisk(response, directory);
+	}
+
 	crawl(response, urls, todo, save, saveCondition, &base);
 
 	thread *threads = new thread[thrnum];
@@ -271,6 +309,5 @@ int main(int argc, char *argv[])
 
 	cout << "\nCrawling completed\n";
 
-	cin.ignore();
 	return 0;
 }

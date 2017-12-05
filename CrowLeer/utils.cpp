@@ -33,7 +33,7 @@ string HTTPrequest(string url)
 
 	string response; //Contains HTTP response
 
-					 //CURL initialization
+	//CURL initialization
 	curl = curl_easy_init();
 	if (curl) {
 		//CURL options
@@ -72,7 +72,7 @@ void debug_out(const unordered_set<string>& data)
 
 bool writeToDisk(const string& str, fs::path path)
 {
-	ofstream out(path);
+	ofstream out(path, std::ios::binary);
 	if (!out.is_open())
 		return false;
 	out << str;
@@ -112,8 +112,6 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 	string extracted;
 	uri temp;
 
-	bool download = false; //Indicates if the download of the page is needed or not
-
 	//Find every href in the page and add the URL to the urls vector
 	pos = findhref(response, 0);
 	while (pos < response.length() && pos != string::npos)
@@ -122,37 +120,16 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 		after = response.find(response[before], before + 1);
 		extracted = response.substr(before + 1, after - before - 1);
 
-
 		queueMutex.lock();
 			temp = parse(extracted, parent);
 			//Add only if never found before
 			auto search = urls.find(temp.tostring());
 			if (search == urls.end())
 			{
-				download = saveflag && temp.check(saveCondition);
 				urls.insert(temp.tostring());
 				todo.push(temp);
 			}
 		queueMutex.unlock();
-
-		if (download)
-		{
-			fs::path directory;
-			directory = fs::current_path();
-			directory /= temp.domain;
-			directory /= temp.path;
-			if (!fs::exists(directory))
-				fs::create_directories(directory);
-			if (temp.filename.empty())
-				directory /= "index.html";
-			else
-				directory /= temp.filename + "." + temp.extension;
-			queueMutex.lock();
-			cout << directory.string() << endl;
-			queueMutex.unlock();
-			writeToDisk(response, directory);
-		}
-
 
 		pos = findhref(response, after + 1);
 	}
