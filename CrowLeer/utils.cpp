@@ -105,12 +105,14 @@ int findhref(const string& response, int offset)
 }
 
 
-void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, uri* const parent)
+void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, bool saveflag, const rule& saveCondition, uri* const parent)
 {
 	int pos; //Holds the position of the string searched for in the response
 	int before, after; //Hold the position of opening and closing quote of the href property
 	string extracted;
 	uri temp;
+
+	bool download = false; //Indicates if the download of the page is needed or not
 
 	//Find every href in the page and add the URL to the urls vector
 	pos = findhref(response, 0);
@@ -127,14 +129,30 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 			auto search = urls.find(temp.tostring());
 			if (search == urls.end())
 			{
-				/*if(temp.domain=="sourceforge.net")
-				{
-					cout << temp.debugdata << endl;
-				}*/
+				download = saveflag && temp.check(saveCondition);
 				urls.insert(temp.tostring());
 				todo.push(temp);
 			}
 		queueMutex.unlock();
+
+		if (download)
+		{
+			fs::path directory;
+			directory = fs::current_path();
+			directory /= temp.domain;
+			directory /= temp.path;
+			if (!fs::exists(directory))
+				fs::create_directories(directory);
+			if (temp.filename.empty())
+				directory /= "index.html";
+			else
+				directory /= temp.filename + "." + temp.extension;
+			queueMutex.lock();
+			cout << directory.string() << endl;
+			queueMutex.unlock();
+			writeToDisk(response, directory);
+		}
+
 
 		pos = findhref(response, after + 1);
 	}

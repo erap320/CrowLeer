@@ -28,7 +28,6 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 	uri current;
 	bool oktoread = true;
 	bool follow;
-	fs::path directory;
 
 	while (oktoread)
 	{
@@ -52,26 +51,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 		if (follow)
 		{
 			response = HTTPrequest(url);
-
-			/*if (current.check(saveCondition) && save)
-			{
-				directory = fs::current_path();
-				directory /= current.domain;
-				directory /= current.path;
-				if (!fs::exists(directory))
-					fs::create_directories(directory);
-				if (current.filename.empty())
-				{
-					
-				}
-				directory /= current.filename + "." + current.extension;
-				queueMutex.lock();
-				cout << directory.string() << endl;
-				queueMutex.unlock();
-				writeToDisk(response, directory);
-			}*/
-
-			crawl(response, urls, todo, &current);
+			crawl(response, urls, todo, save, saveCondition, &current);
 		}
 	}
 }
@@ -275,7 +255,7 @@ int main(int argc, char *argv[])
 	unordered_set<string> urls; //Hash table which contains the URLs found in the response
 	queue<uri> todo; //Queue containing the urls left to crawl
 
-	crawl(response, urls, todo, &base);
+	crawl(response, urls, todo, save, saveCondition, &base);
 
 	thread *threads = new thread[thrnum];
 

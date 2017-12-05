@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<link rel="dns-prefetch" href="http://erap.space/kb" />
+<link rel="dns-prefetch" href="//www.google-analytics.com" />
+<title>ERap's KB - Latest Articles</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Many usefull things out there, but too much stuff to remeber.
+Maybe they could be also useful to you, so I&#039;ll drop them here.">
+<meta name="keywords" content="knowledge base tech programming">
+<meta name="robots" content="index, follow">
+<meta name="generator" content="Powered by Monstra 3.0.4" />
+<meta property="og:site_name" content="ERap's Knowledge Base">
+<meta property="og:url" content="http://erap.space/kb/">
+<meta property="og:title" content="Latest Articles | ERap's Knowledge Base">
+<meta itemprop="url" content="http://erap.space/kb/">
+<meta itemprop="name" content="Latest Articles | ERap's Knowledge Base">
+<link rel="stylesheet" href="http://erap.space/kb/public/themes/darkly/css/bootstrap-darkly.min.css" type="text/css" />
+<link rel="stylesheet" href="http://erap.space/kb/public/themes/darkly/css/override.css" type="text/css" />
+<link rel="stylesheet" href="http://erap.space/kb/public/themes/darkly/plugs/owl/assets/owl.carousel.css" type="text/css" />
+<link rel="stylesheet" href="http://erap.space/kb/public/themes/darkly/plugs/owl/assets/owl.theme.default.min.css">
+<link rel="stylesheet" href="http://erap.space/kb/tmp/minify/frontend_site.minify.136.css" type="text/css" />
+<script type="text/javascript" src="http://erap.space/kb/tmp/minify/frontend_site.minify.9.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
+<![endif]-->
+<link rel="icon" type="image/png" href="\favicon.png">
+</head>
+<body data-spy="scroll" data-target="#tags" data-offset="1">
+<div class="navbar navbar-default">
+<div class="container">
+<div class="navbar-header">
+<img src="/kb/shuckylogo.png" class="navbar-brand">
+<a href="http://erap.space/kb/blog" class="navbar-brand">ERap's Knowledge Base</a>
+<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+</div>
+<div class="navbar-collapse collapse" id="navbar-main">
+<ul class="nav navbar-nav">
+<li class="active"><a href="http://erap.space/kb/blog" class="current" >Home</a></li></ul>
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="http://erap.space/kb/users/login">Log In</a></li>
+    <li><a href="http://erap.space/kb/users/registration">Registration</a></li>
+</ul>
+<form action="http://erap.space/kb/blog" class="navbar-form navbar-right">
+<div id="search">
+<img src="/kb/search.png">
+<input type="text" placeholder="Search" name="tag" id="tbox">
+</div>
+<input type="submit" style="display: none;">
+</form>
+</div>
+</div>
+</div>
+<div class="page-header container" id="blogtitle">
+</div><div class="container-wide">
+<div class="container">
+<div class="row">
+<div class="col-xs-12">
+</div>
+</div>
+<div class="row">
+<div class="col-xs-8">
+    <h3 class="monstra-blog-title"><a href="http://erap.space/kb/blog/gui-with-windows-subsystem-for-linux">How to run graphical applications with the Windows Subsystem for Linux</a></h3>
+    <small class="monstra-blog-date">17 Jul 2017 / ERap320</small>
+    <div class="monstra-blog-post">
+	    <p>To make this work you have to turn the Windows Subsystem for Linux from <em>Turn Windows features on and off</em>, which you can find with a simple search from the start menu.</p>
+
+<p>Download, install and start <a href="https://sourceforge.net/projects/xming/">Xming</a>, our substitute for the X server usually found on linux. This component will render the windows of the GUI program we'll throw at it.</p>
+
+<p>At this point you have to install a program with a graphic interface. For this article I'll use a text editor named <em>gedit</em>, but you can use prettey much everything that comes to your mind. I was even able to succesfully run <em>xfce4</em> straight from the default repository.</p>
+
+<blockquote>
+  <p>sudo apt-get install gedit</p>
+</blockquote>
+
+<p>After the installation is completed, we "link" the shell to Xming by executing</p>
+
+<blockquote>
+  <p>export DISPLAY=:0</p>
+</blockquote>
+
+<p>If you want to avoid having to write the same command every time you restart bash, you can just append it to <em>.bashrc</em>, found in your home directory.</p>
+
+<p>Now you just jave to run the program by writing its name, like this:</p>
+
+<blockquote>
+  <p>gedit</p>
+</blockquote>
+
+<h4>Making shortcuts for Linux programs</h4>
+
+<p>You can make shortcuts to start GUI Linux programs straight from your desktop, using the <em>"bash -c"</em> command.</p>
+
+<p>The command of the shortcut is:</p>
+
+<blockquote>
+  <p>bash -c "export DISPLAY=:0; <em>[[[PROGRAM NAME]]]</em>"</p>
+</blockquote>
+
+<p>Since bash -c doesn't run the content of the user's .bashrc it needs the first line to specify the display before every other command is executed.
+Of course you have to make sure Xming is running every time you try to open these shortcuts.</p>
+    </div>    
+    <h3 class="monstra-blog-title"><a href="http://erap.space/kb/blog/how-to-use-photo-viewer-windows-10">How to use the old Photo Viewer in Windows 10</a></h3>
+    <small class="monstra-blog-date">06 Jul 2017 / ERap320</small>
+    <div class="monstra-blog-post">
+	    <p>Download <a type="application/octet-stream"  href="http://erap.space/kb/public/uploads/Windows10PhotoViewer.reg" download>this .reg file</a> and run it.</p>
+
+<p>The next time you try to <em>Open with...</em> an image file Photo Viewer will show up as a choice.</p>
+
+<p>You can also set which files it will manage from <em>Control Panel</em> > <em>Programs</em> > <em>Default Programs</em>.</p>
+    </div>    
+    <h3 class="monstra-blog-title"><a href="http://erap.space/kb/blog/recover-grub-from-windows-install">How to recover Grub after a Windows installation</a></h3>
+    <small class="monstra-blog-date">05 Jul 2017 / ERap320</small>
+    <div class="monstra-blog-post">
+	    <p>In an administrative Windows' cmd prompt:</p>
+
+<blockquote>
+  <p>bcdedit /setpath \EFI\ubuntu\grubx64.efi</p>
+</blockquote>
+
+<p>If the Linux distribution isn't Ubuntu you can just swap the name of the directory.</p>
+
+<p>If you don't know the exact name of the directory find a way of mounting the EFI partition (it's just FAT32) and check what's in there.</p>
+    </div>    
+<br><br>
+ <b>1</b>  <a href="?page=2">2</a>  <a href="?page=2">next</a> ... <a href="?page=2">end</a> </div>
+<div class="col-xs-4" id="tags" style="right: 0">
+<div class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="175" data-offset-bottom="140">
+<h3>Tags</h3>
+    <a href="http://erap.space/kb/blog?tag=recover" class="monstra-blog-tag"><span class="label label-primary">recover</span></a>
+    <a href="http://erap.space/kb/blog?tag=grub" class="monstra-blog-tag"><span class="label label-primary">grub</span></a>
+    <a href="http://erap.space/kb/blog?tag=windows" class="monstra-blog-tag"><span class="label label-primary">windows</span></a>
+    <a href="http://erap.space/kb/blog?tag=installation" class="monstra-blog-tag"><span class="label label-primary">installation</span></a>
+    <a href="http://erap.space/kb/blog?tag=linux" class="monstra-blog-tag"><span class="label label-primary">linux</span></a>
+    <a href="http://erap.space/kb/blog?tag=windows 10" class="monstra-blog-tag"><span class="label label-primary">windows 10</span></a>
+    <a href="http://erap.space/kb/blog?tag=photo" class="monstra-blog-tag"><span class="label label-primary">photo</span></a>
+    <a href="http://erap.space/kb/blog?tag=viewer" class="monstra-blog-tag"><span class="label label-primary">viewer</span></a>
+    <a href="http://erap.space/kb/blog?tag=subsystem" class="monstra-blog-tag"><span class="label label-primary">subsystem</span></a>
+    <a href="http://erap.space/kb/blog?tag=gui" class="monstra-blog-tag"><span class="label label-primary">gui</span></a>
+    <a href="http://erap.space/kb/blog?tag=program" class="monstra-blog-tag"><span class="label label-primary">program</span></a>
+    <a href="http://erap.space/kb/blog?tag=xming" class="monstra-blog-tag"><span class="label label-primary">xming</span></a>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-12">
+</div>
+</div>
+</div>
+</div>
+<footer class="container"><hr>
+<div class="row">
+<div class="col-md-12">
+<div class="pull-left"></div>
+<div class="pull-right">Powered by <a href="http://monstra.org" target="_blank">Monstra</a> 3.0.4</div>
+</div>
+</div>
+</footer>
+<script type="text/javascript">
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','_mga');
+
+	_mga('create', '', 'auto');
+	_mga('send', 'pageview', {
+		'page': 'http://erap.space/kb/',
+		'title': 'Latest Articles'
+	});
+</script></body>
+</html>
