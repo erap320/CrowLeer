@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 		switch (opt)
 		{
 		case 'h':
-			cout << "\n\n" << HELP_MSG << endl;
+			cout << HELP_MSG << endl;
 			return 0;
 			break;
 		case 'u':
