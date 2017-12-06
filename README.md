@@ -10,6 +10,7 @@
 | -d --depth                                                                              | Maximum crawling depth (the starting URL spcified in -u is at depth 0)                                   |
 | -x --same-domain                                                                        | Quick flag to only follow URLs with the same domain as the starting URL, overrides the --f-domain option |
 | -a --save                                                                               | Activates the download functionality of CrowLeer. If not used nothing will be saved on the disk          |
+| -o --output                                                                             | Choose a directory where the selected files will be saved. The default value is the current directory    |
 | --f-global                                                                              | Follow rule to be tested on the whole parsed URL                                                         |
 | --f-protocol --f-domain --f-path --f--filename --f-extension --f-querystring --f-anchor | Follow rules on single parts of parsed URLs                                                              |
 | --s-global                                                                              | Save rule to be tested on the whole parsed URL                                                           |
