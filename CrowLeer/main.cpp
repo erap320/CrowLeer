@@ -20,6 +20,8 @@ int maxdepth = 0;
 rule followCondition; //conditions to choose what to crawl
 rule saveCondition; //condition to choose what to download
 bool save = false; //flag to activate the saving of files, changed with the -a option
+//String of the path where to save files
+string pathString;
 
 void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 {
@@ -29,6 +31,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 	bool oktoread = true;
 	bool follow;
 	bool download;
+	fs::path directory;
 
 	while (oktoread)
 	{
@@ -57,20 +60,29 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 			response = HTTPrequest(url);
 
 			if (follow)
-				crawl(response, urls, todo, save, saveCondition, &current);
+				crawl(response, urls, todo, save, &current);
 			if (download)
 			{
-				fs::path directory;
-				directory = fs::current_path();
-				directory /= current.domain;
-				directory /= current.path;
+				directory = pathString;
+				directory /= std::regex_replace(current.domain, regex(":|\\*|\\?|\"|<|>|\\|"), "");
+				directory /= std::regex_replace(current.path, regex(":|\\*|\\?|\"|<|>|\\|"), "");
 				if (!fs::exists(directory))
-					fs::create_directories(directory);
-				if (current.filename.empty())
-					directory /= "index.html";
-				else
-					directory /= current.filename + "." + current.extension;
-				writeToDisk(response, directory);
+				{
+					if (fs::create_directories(directory))
+					{
+						if (current.filename.empty())
+							directory /= "index.html";
+						else
+							directory /= current.filename + "." + current.extension;
+						writeToDisk(response, directory);
+					}
+					else
+					{
+						queueMutex.lock();
+							cout << "Could not create folder for URL " << url << endl;
+						queueMutex.lock();
+					}
+				}
 			}
 		}
 
@@ -85,6 +97,10 @@ int main(int argc, char *argv[])
 	//Variable for the command line options management
 	char opt=0;
 
+	//Default value of the saved files path
+	fs::path directory;
+	pathString = fs::current_path().string();
+
 	/* getopt_long stores the option index here. */
 	static struct option long_options[] =
 	{
@@ -94,6 +110,7 @@ int main(int argc, char *argv[])
 		{ "depth",			required_argument,	0,	'd' },
 		{ "same-domain",	required_argument,	0,	'x' },
 		{ "save",			required_argument,	0,	'a' },
+		{ "output",			required_argument,	0,	'o' },
 		{ "f-global",		required_argument,	0,	'f' },
 		{ "f-protocol",		required_argument,	0,	'f' },
 		{ "f-domain",		required_argument,	0,	'f' },
@@ -117,8 +134,7 @@ int main(int argc, char *argv[])
 	{
 		int option_index = 0;
 
-		opt = getopt_long(argc, argv, "hu:xat:d:f:s:",
-			long_options, &option_index);
+		opt = getopt_long(argc, argv, "hu:xao:t:d:f:s:", long_options, &option_index);
 
 		/* Detect the end of the options. */
 		if (opt == -1)
@@ -127,30 +143,50 @@ int main(int argc, char *argv[])
 		switch (opt)
 		{
 		case 'h':
+		{
 			cout << HELP_MSG << endl;
 			return 0;
 			break;
+		}
 		case 'u':
+		{
 			cout << "Selected URL: " << optarg << endl;
 			url.append(optarg);
 			break;
+		}
 		case 't':
+		{
 			cout << "Threads number: " << optarg << endl;
 			thrnum = atoi(optarg);
 			break;
+		}
 		case 'd':
+		{
 			cout << "Maximum depth: " << optarg << endl;
 			maxdepth = atoi(optarg);
 			break;
+		}
 		case 'x':
+		{
 			sameDomain = true;
 			cout << "Same domain rule applied" << endl;
 			break;
+		}
 		case 'a':
+		{
 			save = true;
 			cout << "Activate Save rule applied" << endl;
 			break;
+		}
+		case 'o':
+		{
+			pathString.clear();
+			pathString.append(optarg);
+			cout << "Output directory for saved files changed to " << optarg << endl;
+			break;
+		}
 		case 'f':
+		{
 			if (long_options[option_index].name == "f-global")
 			{
 				followCondition.global = optarg;
@@ -192,7 +228,9 @@ int main(int argc, char *argv[])
 				cout << "Anchor Follow rule: " << optarg << endl;
 			}
 			break;
+		}
 		case 's':
+		{
 			if (long_options[option_index].name == "s-global")
 			{
 				saveCondition.global = optarg;
@@ -234,11 +272,13 @@ int main(int argc, char *argv[])
 				cout << "Anchor Save rule: " << optarg << endl;
 			}
 			break;
+		}
 		case ':':
+		{
 			cout << "Missing value for option -" << (char)optopt << endl;
 			return 0;
 			break;
-
+		}
 		case '?':
 		default:
 			return 0;
@@ -252,7 +292,6 @@ int main(int argc, char *argv[])
 		cout << "\n\n" << HELP_MSG << endl;
 		return 0;
     }
-
 
 	if (url.empty())
 	{
@@ -280,8 +319,7 @@ int main(int argc, char *argv[])
 	//Check if the starting url has to be saved
 	if (save && base.check(saveCondition))
 	{
-		fs::path directory;
-		directory = fs::current_path();
+		directory = pathString;
 		directory /= base.domain;
 		directory /= base.path;
 		if (!fs::exists(directory))
@@ -293,7 +331,7 @@ int main(int argc, char *argv[])
 		writeToDisk(response, directory);
 	}
 
-	crawl(response, urls, todo, save, saveCondition, &base);
+	crawl(response, urls, todo, save, &base);
 
 	thread *threads = new thread[thrnum];
 

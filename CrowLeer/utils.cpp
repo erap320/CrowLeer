@@ -1,6 +1,5 @@
 #include "utils.h"
 #include "uri.h"
-
 #include "color.h"
 
 #include <iostream>
@@ -105,7 +104,7 @@ int findhref(const string& response, int offset)
 }
 
 
-void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, bool saveflag, const rule& saveCondition, uri* const parent)
+void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, bool saveflag, uri* const parent)
 {
 	int pos; //Holds the position of the string searched for in the response
 	int before, after; //Hold the position of opening and closing quote of the href property
