@@ -195,6 +195,8 @@ uri parse(string original, uri* const parent)
 		temp.domain = support.authority().to_string();
 		temp.path = support.path().to_string();
 		temp.path.erase(0, 1);
+		if (temp.path.back() == '/')
+			temp.path.pop_back();
 		temp.querystring = support.query().to_string();
 		temp.anchor = support.fragment().to_string();
 
