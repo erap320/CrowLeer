@@ -15,6 +15,7 @@ using std::queue;
 using std::mutex;
 
 extern mutex queueMutex;
+extern mutex consoleMutex;
 
 //Function used by CURL to add chunks of data to the response string
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
@@ -36,3 +37,6 @@ void crawl(const string& response, unordered_set<string>& data, queue<uri>& todo
 
 //Fixes initial urls to make them uri parsing compliant
 string validate(string url);
+
+//Outputs error text to console
+void error_out(string s);

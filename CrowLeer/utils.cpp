@@ -12,6 +12,7 @@ using std::cout; using std::cin;  using std::endl;
 using std::ofstream;
 
 mutex queueMutex;
+mutex consoleMutex;
 
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
@@ -45,11 +46,7 @@ string HTTPrequest(string url)
 		res = curl_easy_perform(curl);
 		if (res != CURLE_OK)
 		{
-			queueMutex.lock();
-				Color('r');
-				cout << ">> Network Error: " << curl_easy_strerror(res) << " on " << url << "\n";
-				Color('w');
-			queueMutex.unlock();
+			error_out(">> Network Error: " + (string)curl_easy_strerror(res) + " on " + url);
 		}
 
 		//CURL cleanup
@@ -140,4 +137,13 @@ string validate(string url)
 	if (pos == string::npos)
 		url = "http://" + url;
 	return url;
+}
+
+void error_out(string s)
+{
+	consoleMutex.lock();
+	Color('r');
+	cout << s << endl;
+	Color('w');
+	consoleMutex.unlock();
 }

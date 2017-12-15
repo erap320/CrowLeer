@@ -1,7 +1,9 @@
 #include "uri.h"
 #include "conditions.h"
+#include "utils.h"
 
 #include <iostream>
+#include <fstream>
 
 using std::cout; using std::endl;
 using std::regex_match;
@@ -91,14 +93,15 @@ string trim(string str)
 	return str;
 }
 
-uri parse(string str, uri* const parent)
+uri parse(string original, uri* const parent)
 {
+	string str;
+	string completion;
 	uri temp;
 	int pos;
-	int end;
 
-	/*
-	str = trim(str);
+	//Remove white spaces
+	str = trim(original);
 
 	string relative = ""; //Holds relative paths informations
 
@@ -107,11 +110,18 @@ uri parse(string str, uri* const parent)
 		temp.depth = parent->depth + 1;
 	}
 
-	//Relative path
-	if (str[0] == '\\' || str[0] == '.' || (str[0] == '/' && str[1] != '/'))
+	//Check type of relative path
+	if (str[0] == '\\' || str[0] == '.' || str[0] == '/' || str[0] == '?' || str[0] == '#')
 	{
 		relative = str[0];
 		str.erase(0, 1);
+
+		if (relative == "/" && str[0] == '/')
+		{
+			relative = "//";
+			str.erase(0, 1);
+		}
+
 		if (relative == ".")
 		{
 			if (str[0] == '.')
@@ -123,142 +133,86 @@ uri parse(string str, uri* const parent)
 		}
 	}
 
-	//Protocol
-	pos = str.find(":");
-	if (pos != string::npos && str[pos + 1] == '/' && str[pos + 2] == '/')
+	//Completion
+	if (!relative.empty())
 	{
-		temp.protocol = str.substr(0, pos);
-		str.erase(0, pos);
-	}
-	else if (parent != nullptr)
-		temp.protocol = parent->protocol;
-
-	//Domain
-	if (relative.empty())
-	{
-		pos = str.find("//");
-		if (pos != string::npos)
+		if (parent != nullptr)
 		{
-			pos += 2;
-			end = str.find("/", pos);
-			if (end != string::npos)
+			if (!parent->protocol.empty())
 			{
-				temp.domain = str.substr(pos, end - pos);
-				str.erase(0, end + 1);
+				completion = parent->protocol;
+				completion += "://";
 			}
-			else
+
+			if (relative != "//")
 			{
-				temp.domain = str.substr(pos);
-				str.clear();
-				return temp;
+				completion += parent->domain + "/";
+
+				if (relative[0] == '.' || relative == "/")
+				{
+					if (!parent->path.empty())
+					{
+						completion += parent->path;
+						if (relative == "..")
+						{
+							pos = completion.find_last_of("/");
+							if (pos != string::npos)
+								completion.erase(pos);
+						}
+					}
+
+					completion += "/";
+				}
+				else if (relative == "?" || relative == "#")
+				{
+					if(!parent->filename.empty())
+						completion += parent->filename + "." + parent->extension;
+					if (relative == "?")
+					{
+						completion += "?";
+					}
+					if (relative == "#" && !parent->querystring.empty())
+					{
+						completion += "?" + parent->querystring + "#";
+					}
+				}
 			}
-		}
-		else if (parent != nullptr)
-		{
-			temp.domain = parent->domain;
-		}
-	}
-	else if (parent != nullptr)
-	{
-		temp.domain = parent->domain;
-		if (relative == "." || relative == "/")
-			temp.path = parent->path;
-		else if (relative == "..")
-		{
-			temp.path = parent->path;
-			pos = temp.path.find_last_of("/");
-			if (pos != string::npos)
-				temp.path.erase(pos);
-		}
-	}
 
-	//Path
-	pos = str.find_last_of("/");
-	if (pos != string::npos)
-	{
-		temp.path = str.substr(0, pos);
-		str.erase(0, pos + 1);
-	}
-
-	//Filename
-	pos = str.find_last_of(".");
-	if (pos != string::npos)
-	{
-		temp.filename = str.substr(0, pos);
-		str.erase(0, pos + 1);
-	}
-	else //Check back for missed Path
-	{
-		pos = str.find_first_of("?#");
-		if (pos != string::npos)
-		{
-			temp.path = str.substr(0, pos);
-			str.erase(0, pos);
-		}
-	}
-
-	//Extension
-	pos = str.find_first_of("?#");
-	if (!temp.filename.empty())
-	{
-		if (pos != string::npos)
-		{
-			temp.extension = str.substr(0, pos);
-			str.erase(0, pos);
+			str.insert(0, completion);
 		}
 		else
 		{
-			temp.extension = str;
-			str.clear();
-			return temp;
-		}
-	}
-	else if (str.length() > 0) //Check back for missed Path
-	{
-		if (!temp.path.empty())
-			temp.path += "/";
-		if (pos != string::npos)
-		{
-			temp.path += str.substr(0, pos);
-			str.erase(0, pos);
-		}
-		else
-		{
-			temp.path += str;
-			str.clear();
-			return temp;
+			error_out(">> Missing needed parent URL for " + original);
 		}
 	}
 
-	//Querystring
-	if (str[0] == '?')
-	{
-		pos = str.find("#");
-		if (pos != string::npos)
+	try {
+		//Let cpp-netlib's uri class parse the completed URL
+		network::uri support(str);
+
+		//Convert resulting parts to our uri class
+		temp.protocol = support.scheme().to_string();
+		temp.domain = support.authority().to_string();
+		temp.path = support.path().to_string();
+		temp.path.erase(0, 1);
+		temp.querystring = support.query().to_string();
+		temp.anchor = support.fragment().to_string();
+
+		//Check if there is a filename in the path
+		int lastslash = temp.path.find_last_of("/");
+		pos = temp.path.find_last_of(".");
+		if (pos != string::npos && lastslash != string::npos && lastslash < pos)
 		{
-			temp.querystring = str.substr(1, pos - 1);
-			str.erase(0, pos);
-		}
-		else
-		{
-			temp.querystring = str.substr(1);
-			str.clear();
-			return temp;
+			temp.filename = temp.path.substr(lastslash + 1, pos-lastslash-1);
+			temp.extension = temp.path.substr(pos+1);
+			temp.path.erase(lastslash);
 		}
 	}
-
-	//Anchor
-	if (str[0] == '#')
+	//The original URL can't be parsed
+	catch (network::uri_syntax_error e)
 	{
-		temp.anchor = str.substr(1);
-		str.clear();
+		error_out(">> Parsing error on " + original);
 	}
-	*/
-
-	network::uri support(str);
-	cout << support.scheme() << endl;
-	cout << support.is_absolute() << endl;
-	cout << support.has_scheme() << endl;
 
 	return temp;
 }
