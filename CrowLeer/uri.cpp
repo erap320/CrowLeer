@@ -213,7 +213,8 @@ uri parse(string original, uri* const parent)
 	//The original URL can't be parsed
 	catch (network::uri_syntax_error e)
 	{
-		error_out(">> Parsing error on " + original);
+		error_out(">> Parsing error on " + original + "\n   Found in " + parent->tostring());
+
 	}
 
 	return temp;
