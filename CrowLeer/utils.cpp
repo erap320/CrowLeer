@@ -8,8 +8,6 @@
 #define CURL_STATICLIB
 #include "curl.h"
 
-#pragma comment(lib, "libcurl_a.lib")
-
 using std::cout; using std::cin;  using std::endl;
 using std::ofstream;
 

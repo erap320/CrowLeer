@@ -91,261 +91,266 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 int main(int argc, char *argv[])
 {
-	//Condition to use the -s flag
-	bool sameDomain = false;
+	////Condition to use the -s flag
+	//bool sameDomain = false;
 
-	//Variable for the command line options management
-	char opt=0;
+	////Variable for the command line options management
+	//char opt=0;
 
-	//Default value of the saved files path
-	fs::path directory;
-	pathString = fs::current_path().string();
+	////Default value of the saved files path
+	//fs::path directory;
+	//pathString = fs::current_path().string();
 
-	/* getopt_long stores the option index here. */
-	static struct option long_options[] =
-	{
-		{ "help",			no_argument,		0,	'h' },
-		{ "url",			required_argument,	0,	'u' },
-		{ "threads",		required_argument,	0,	't' },
-		{ "depth",			required_argument,	0,	'd' },
-		{ "same-domain",	required_argument,	0,	'x' },
-		{ "save",			required_argument,	0,	'S' },
-		{ "output",			required_argument,	0,	'o' },
-		{ "f-global",		required_argument,	0,	'f' },
-		{ "f-protocol",		required_argument,	0,	'f' },
-		{ "f-domain",		required_argument,	0,	'f' },
-		{ "f-path",			required_argument,	0,	'f' },
-		{ "f-filename",		required_argument,	0,	'f' },
-		{ "f-extension",	required_argument,	0,	'f' },
-		{ "f-querystring",	required_argument,	0,	'f' },
-		{ "f-anchor",		required_argument,	0,	'f' },
-		{ "s-global",		required_argument,	0,	's' },
-		{ "s-protocol",		required_argument,	0,	's' },
-		{ "s-domain",		required_argument,	0,	's' },
-		{ "s-path",			required_argument,	0,	's' },
-		{ "s-filename",		required_argument,	0,	's' },
-		{ "s-extension",	required_argument,	0,	's' },
-		{ "s-querystring",	required_argument,	0,	's' },
-		{ "s-anchor",		required_argument,	0,	's' },
-		{ 0, 0, 0, 0 }
-	};
+	///* getopt_long stores the option index here. */
+	//static struct option long_options[] =
+	//{
+	//	{ "help",			no_argument,		0,	'h' },
+	//	{ "url",			required_argument,	0,	'u' },
+	//	{ "threads",		required_argument,	0,	't' },
+	//	{ "depth",			required_argument,	0,	'd' },
+	//	{ "same-domain",	required_argument,	0,	'x' },
+	//	{ "save",			required_argument,	0,	'S' },
+	//	{ "output",			required_argument,	0,	'o' },
+	//	{ "f-global",		required_argument,	0,	'f' },
+	//	{ "f-protocol",		required_argument,	0,	'f' },
+	//	{ "f-domain",		required_argument,	0,	'f' },
+	//	{ "f-path",			required_argument,	0,	'f' },
+	//	{ "f-filename",		required_argument,	0,	'f' },
+	//	{ "f-extension",	required_argument,	0,	'f' },
+	//	{ "f-querystring",	required_argument,	0,	'f' },
+	//	{ "f-anchor",		required_argument,	0,	'f' },
+	//	{ "s-global",		required_argument,	0,	's' },
+	//	{ "s-protocol",		required_argument,	0,	's' },
+	//	{ "s-domain",		required_argument,	0,	's' },
+	//	{ "s-path",			required_argument,	0,	's' },
+	//	{ "s-filename",		required_argument,	0,	's' },
+	//	{ "s-extension",	required_argument,	0,	's' },
+	//	{ "s-querystring",	required_argument,	0,	's' },
+	//	{ "s-anchor",		required_argument,	0,	's' },
+	//	{ 0, 0, 0, 0 }
+	//};
 
-	while (opt != -1)
-	{
-		int option_index = 0;
+	//while (opt != -1)
+	//{
+	//	int option_index = 0;
 
-		opt = getopt_long(argc, argv, "hu:xSo:t:d:f:s:", long_options, &option_index);
+	//	opt = getopt_long(argc, argv, "hu:xSo:t:d:f:s:", long_options, &option_index);
 
-		/* Detect the end of the options. */
-		if (opt == -1)
-			break;
+	//	/* Detect the end of the options. */
+	//	if (opt == -1)
+	//		break;
 
-		switch (opt)
-		{
-		case 'h':
-		{
-			cout << HELP_MSG << endl;
-			return 0;
-			break;
-		}
-		case 'u':
-		{
-			cout << "Selected URL: " << optarg << endl;
-			url.append(optarg);
-			break;
-		}
-		case 't':
-		{
-			cout << "Threads number: " << optarg << endl;
-			thrnum = atoi(optarg);
-			break;
-		}
-		case 'd':
-		{
-			cout << "Maximum depth: " << optarg << endl;
-			maxdepth = atoi(optarg);
-			break;
-		}
-		case 'x':
-		{
-			sameDomain = true;
-			cout << "Same domain rule applied" << endl;
-			break;
-		}
-		case 'S':
-		{
-			save = true;
-			cout << "Activate Save rule applied" << endl;
-			break;
-		}
-		case 'o':
-		{
-			pathString.clear();
-			pathString.append(optarg);
-			cout << "Output directory for saved files changed to " << optarg << endl;
-			break;
-		}
-		case 'f':
-		{
-			if (long_options[option_index].name == "f-global")
-			{
-				followCondition.global = optarg;
-				cout << "Global Follow rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "f-protocol")
-			{
-				followCondition.protocol = optarg;
-				cout << "Protocol Follow rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "f-domain")
-			{
-				followCondition.domain = optarg;
-				cout << "Domain Follow rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "f-path")
-			{
-				followCondition.path = optarg;
-				cout << "Path Follow rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "f-filename")
-			{
-				followCondition.filename = optarg;
-				cout << "Filename Follow rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "f-extension")
-			{
-				followCondition.extension = optarg;
-				cout << "Extension Follow rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "f-querystring")
-			{
-				followCondition.querystring = optarg;
-				cout << "Querystring Follow rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "f-anchor")
-			{
-				followCondition.anchor = optarg;
-				cout << "Anchor Follow rule: " << optarg << endl;
-			}
-			break;
-		}
-		case 's':
-		{
-			if (long_options[option_index].name == "s-global")
-			{
-				saveCondition.global = optarg;
-				cout << "Global Save rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "s-protocol")
-			{
-				saveCondition.protocol = optarg;
-				cout << "Protocol save rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "s-domain")
-			{
-				saveCondition.domain = optarg;
-				cout << "Domain Save rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "s-path")
-			{
-				saveCondition.path = optarg;
-				cout << "Path Save rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "s-filename")
-			{
-				saveCondition.filename = optarg;
-				cout << "Filename Save rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "s-extension")
-			{
-				saveCondition.extension = optarg;
-				cout << "Extension Save rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "s-querystring")
-			{
-				saveCondition.querystring = optarg;
-				cout << "Querystring Save rule: " << optarg << endl;
-			}
-			else if (long_options[option_index].name == "s-anchor")
-			{
-				saveCondition.anchor = optarg;
-				cout << "Anchor Save rule: " << optarg << endl;
-			}
-			break;
-		}
-		case ':':
-		{
-			cout << "Missing value for option -" << (char)optopt << endl;
-			return 0;
-			break;
-		}
-		case '?':
-		default:
-			return 0;
-		}
-	}
-	if (optind < argc)
-    {
-		cout << "Illegal non-option arguments: ";
-		while (optind < argc)
-			cout << argv[optind++] << " ";
-		cout << "\n\n" << HELP_MSG << endl;
-		return 0;
-    }
+	//	switch (opt)
+	//	{
+	//	case 'h':
+	//	{
+	//		cout << HELP_MSG << endl;
+	//		return 0;
+	//		break;
+	//	}
+	//	case 'u':
+	//	{
+	//		cout << "Selected URL: " << optarg << endl;
+	//		url.append(optarg);
+	//		break;
+	//	}
+	//	case 't':
+	//	{
+	//		cout << "Threads number: " << optarg << endl;
+	//		thrnum = atoi(optarg);
+	//		break;
+	//	}
+	//	case 'd':
+	//	{
+	//		cout << "Maximum depth: " << optarg << endl;
+	//		maxdepth = atoi(optarg);
+	//		break;
+	//	}
+	//	case 'x':
+	//	{
+	//		sameDomain = true;
+	//		cout << "Same domain rule applied" << endl;
+	//		break;
+	//	}
+	//	case 'S':
+	//	{
+	//		save = true;
+	//		cout << "Activate Save rule applied" << endl;
+	//		break;
+	//	}
+	//	case 'o':
+	//	{
+	//		pathString.clear();
+	//		pathString.append(optarg);
+	//		cout << "Output directory for saved files changed to " << optarg << endl;
+	//		break;
+	//	}
+	//	case 'f':
+	//	{
+	//		if (long_options[option_index].name == "f-global")
+	//		{
+	//			followCondition.global = optarg;
+	//			cout << "Global Follow rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "f-protocol")
+	//		{
+	//			followCondition.protocol = optarg;
+	//			cout << "Protocol Follow rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "f-domain")
+	//		{
+	//			followCondition.domain = optarg;
+	//			cout << "Domain Follow rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "f-path")
+	//		{
+	//			followCondition.path = optarg;
+	//			cout << "Path Follow rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "f-filename")
+	//		{
+	//			followCondition.filename = optarg;
+	//			cout << "Filename Follow rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "f-extension")
+	//		{
+	//			followCondition.extension = optarg;
+	//			cout << "Extension Follow rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "f-querystring")
+	//		{
+	//			followCondition.querystring = optarg;
+	//			cout << "Querystring Follow rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "f-anchor")
+	//		{
+	//			followCondition.anchor = optarg;
+	//			cout << "Anchor Follow rule: " << optarg << endl;
+	//		}
+	//		break;
+	//	}
+	//	case 's':
+	//	{
+	//		if (long_options[option_index].name == "s-global")
+	//		{
+	//			saveCondition.global = optarg;
+	//			cout << "Global Save rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "s-protocol")
+	//		{
+	//			saveCondition.protocol = optarg;
+	//			cout << "Protocol save rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "s-domain")
+	//		{
+	//			saveCondition.domain = optarg;
+	//			cout << "Domain Save rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "s-path")
+	//		{
+	//			saveCondition.path = optarg;
+	//			cout << "Path Save rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "s-filename")
+	//		{
+	//			saveCondition.filename = optarg;
+	//			cout << "Filename Save rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "s-extension")
+	//		{
+	//			saveCondition.extension = optarg;
+	//			cout << "Extension Save rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "s-querystring")
+	//		{
+	//			saveCondition.querystring = optarg;
+	//			cout << "Querystring Save rule: " << optarg << endl;
+	//		}
+	//		else if (long_options[option_index].name == "s-anchor")
+	//		{
+	//			saveCondition.anchor = optarg;
+	//			cout << "Anchor Save rule: " << optarg << endl;
+	//		}
+	//		break;
+	//	}
+	//	case ':':
+	//	{
+	//		cout << "Missing value for option -" << (char)optopt << endl;
+	//		return 0;
+	//		break;
+	//	}
+	//	case '?':
+	//	default:
+	//		return 0;
+	//	}
+	//}
+	//if (optind < argc)
+ //   {
+	//	cout << "Illegal non-option arguments: ";
+	//	while (optind < argc)
+	//		cout << argv[optind++] << " ";
+	//	cout << "\n\n" << HELP_MSG << endl;
+	//	return 0;
+ //   }
 
-	if (url.empty())
-	{
-		cout << "URL: ";
-		cin >> url;
-	}
+	//if (url.empty())
+	//{
+	//	cout << "URL: ";
+	//	cin >> url;
+	//}
 
-	cout << endl;
+	//cout << endl;
 
-	url = validate(url);
+	//url = validate(url);
+	//
+	//string response; //Contains HTTP response
+
+	//response = HTTPrequest(url);
+
+	//uri base(url);
+	//if (sameDomain)
+	//	followCondition.domain = std::regex_replace(base.domain, regex("\\."), "\\.");
+
+	//unordered_set<string> urls; //Hash table which contains the URLs found in the response
+	//queue<uri> todo; //Queue containing the urls left to crawl
+
+	//cout << todo.size() << " >> " << url << " : " << base.depth << endl;
+
+	////Check if the starting url has to be saved
+	//if (save && base.check(saveCondition))
+	//{
+	//	directory = pathString;
+	//	directory /= base.domain;
+	//	directory /= base.path;
+	//	if (!fs::exists(directory))
+	//		fs::create_directories(directory);
+	//	if (base.filename.empty())
+	//		directory /= "index.html";
+	//	else
+	//		directory /= base.filename + "." + base.extension;
+	//	writeToDisk(response, directory);
+	//}
+
+	//crawl(response, urls, todo, save, &base);
+
+	//thread *threads = new thread[thrnum];
+
+	//for (int i = 0; i < thrnum; i++)
+	//{
+	//	threads[i] = std::thread(doWork, std::ref(urls), std::ref(todo), base);
+	//}
+
+	//for (int i = 0; i < thrnum; i++)
+	//{
+	//	threads[i].join();
+	//}
+
+	//cout << "\nCrawling completed\n";
+	//
 	
-	string response; //Contains HTTP response
+	uri prova("//canibelli.it/patata/patatamon.jpg");
 
-	response = HTTPrequest(url);
-
-	uri base(url);
-	if (sameDomain)
-		followCondition.domain = std::regex_replace(base.domain, regex("\\."), "\\.");
-
-	unordered_set<string> urls; //Hash table which contains the URLs found in the response
-	queue<uri> todo; //Queue containing the urls left to crawl
-
-	cout << todo.size() << " >> " << url << " : " << base.depth << endl;
-
-	//Check if the starting url has to be saved
-	if (save && base.check(saveCondition))
-	{
-		directory = pathString;
-		directory /= base.domain;
-		directory /= base.path;
-		if (!fs::exists(directory))
-			fs::create_directories(directory);
-		if (base.filename.empty())
-			directory /= "index.html";
-		else
-			directory /= base.filename + "." + base.extension;
-		writeToDisk(response, directory);
-	}
-
-	crawl(response, urls, todo, save, &base);
-
-	thread *threads = new thread[thrnum];
-
-	for (int i = 0; i < thrnum; i++)
-	{
-		threads[i] = std::thread(doWork, std::ref(urls), std::ref(todo), base);
-	}
-
-	for (int i = 0; i < thrnum; i++)
-	{
-		threads[i].join();
-	}
-
-	cout << "\nCrawling completed\n";
+	cin.ignore();
 
 	return 0;
 }

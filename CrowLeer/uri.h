@@ -2,6 +2,7 @@
 
 #include "conditions.h"
 #include <string>
+#include <network\uri.hpp>
 
 using std::string;
 

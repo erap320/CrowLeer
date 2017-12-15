@@ -97,9 +97,10 @@ uri parse(string str, uri* const parent)
 	int pos;
 	int end;
 
+	/*
 	str = trim(str);
 
-	string relative=""; //Holds relative paths informations
+	string relative = ""; //Holds relative paths informations
 
 	if (parent != nullptr)
 	{
@@ -107,7 +108,7 @@ uri parse(string str, uri* const parent)
 	}
 
 	//Relative path
-	if (str[0] == '\\' || str[0] == '.' || (str[0]=='/' && str[1]!='/') )
+	if (str[0] == '\\' || str[0] == '.' || (str[0] == '/' && str[1] != '/'))
 	{
 		relative = str[0];
 		str.erase(0, 1);
@@ -124,7 +125,7 @@ uri parse(string str, uri* const parent)
 
 	//Protocol
 	pos = str.find(":");
-	if (pos != string::npos && str[pos+1]=='/' && str[pos+2]=='/')
+	if (pos != string::npos && str[pos + 1] == '/' && str[pos + 2] == '/')
 	{
 		temp.protocol = str.substr(0, pos);
 		str.erase(0, pos);
@@ -157,7 +158,7 @@ uri parse(string str, uri* const parent)
 			temp.domain = parent->domain;
 		}
 	}
-	else if(parent != nullptr)
+	else if (parent != nullptr)
 	{
 		temp.domain = parent->domain;
 		if (relative == "." || relative == "/")
@@ -173,7 +174,7 @@ uri parse(string str, uri* const parent)
 
 	//Path
 	pos = str.find_last_of("/");
-	if(pos != string::npos)
+	if (pos != string::npos)
 	{
 		temp.path = str.substr(0, pos);
 		str.erase(0, pos + 1);
@@ -189,7 +190,7 @@ uri parse(string str, uri* const parent)
 	else //Check back for missed Path
 	{
 		pos = str.find_first_of("?#");
-		if(pos != string::npos)
+		if (pos != string::npos)
 		{
 			temp.path = str.substr(0, pos);
 			str.erase(0, pos);
@@ -212,7 +213,7 @@ uri parse(string str, uri* const parent)
 			return temp;
 		}
 	}
-	else if(str.length() > 0) //Check back for missed Path
+	else if (str.length() > 0) //Check back for missed Path
 	{
 		if (!temp.path.empty())
 			temp.path += "/";
@@ -235,7 +236,7 @@ uri parse(string str, uri* const parent)
 		pos = str.find("#");
 		if (pos != string::npos)
 		{
-			temp.querystring = str.substr(1, pos-1);
+			temp.querystring = str.substr(1, pos - 1);
 			str.erase(0, pos);
 		}
 		else
@@ -252,6 +253,12 @@ uri parse(string str, uri* const parent)
 		temp.anchor = str.substr(1);
 		str.clear();
 	}
+	*/
+
+	network::uri support(str);
+	cout << support.scheme() << endl;
+	cout << support.is_absolute() << endl;
+	cout << support.has_scheme() << endl;
 
 	return temp;
 }
