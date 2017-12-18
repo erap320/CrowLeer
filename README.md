@@ -67,6 +67,11 @@ The URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split i
 | querystring | "s=canis"          |
 | anchor      | "Origin"           |
 
+## Third party libraries
+
+* [curl 7.57.0](https://curl.haxx.se/)
+* [cpp-netlib URI](https://github.com/cpp-netlib/uri)
+
 ## License
 
 You can do pretty much what you want with this. If you do, it will be much appreciated to mention me in your project readme/info. Every project using this code will be added to the readme if you send me an email to the address provided below.
