@@ -1,6 +1,6 @@
 # CrowLeer, the fast and reliable CLI web crawler with focus on pages download
 
-## Windows x64 executable: [DOWNLOAD](http://erap.space/htdocs/downloads/CrowLeer.rar)
+## Windows x64 executable: [DOWNLOAD](http://erapspace.altervista.org/downloads/CrowLeer.rar)
 
 ## Options:
 
