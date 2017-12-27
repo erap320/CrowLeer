@@ -72,12 +72,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\git\CrowLeer\CrowLeer\cpp-netlib;D:\git\CrowLeer\CrowLeer\curl;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\git\CrowLeer\CrowLeer\cpp-netlib;D:\git\CrowLeer\CrowLeer\curl;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\cpp-netlib;$(ProjectDir)\curl;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\cpp-netlib;$(ProjectDir)\curl;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\git\CrowLeer\CrowLeer\cpp-netlib;D:\git\CrowLeer\CrowLeer\curl;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\git\CrowLeer\CrowLeer\cpp-netlib;D:\git\CrowLeer\CrowLeer\curl;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\cpp-netlib;$(ProjectDir)\curl;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\cpp-netlib;$(ProjectDir)\curl;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>D:\git\CrowLeer\CrowLeer\cpp-netlib86;D:\git\CrowLeer\CrowLeer\curl86;$(IncludePath)</IncludePath>
