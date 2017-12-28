@@ -1,6 +1,6 @@
-#include "uri.h"
-#include "conditions.h"
-#include "utils.h"
+#include "uri.hpp"
+#include "conditions.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 #include <fstream>

@@ -1,6 +1,6 @@
-#include "utils.h"
-#include "uri.h"
-#include "color.h"
+#include "utils.hpp"
+#include "uri.hpp"
+#include "color.hpp"
 
 #include <iostream>
 #include <fstream>

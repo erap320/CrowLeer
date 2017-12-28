@@ -149,12 +149,12 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="color.h" />
-    <ClInclude Include="conditions.h" />
+    <ClInclude Include="color.hpp" />
+    <ClInclude Include="conditions.hpp" />
     <ClInclude Include="getopt.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="uri.h" />
-    <ClInclude Include="utils.h" />
+    <ClInclude Include="resource.hpp" />
+    <ClInclude Include="uri.hpp" />
+    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="res.rc" />

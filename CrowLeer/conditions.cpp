@@ -1,4 +1,4 @@
-#include "conditions.h"
+#include "conditions.hpp"
 
 rule::rule()
 {

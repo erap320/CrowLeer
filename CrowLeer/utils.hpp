@@ -5,9 +5,9 @@
 #include <mutex>
 #include <filesystem>
 
-#include "uri.h"
+#include "uri.hpp"
 
-namespace fs = std::tr2::sys;
+namespace fs = std::experimental::filesystem;
 
 using std::string;
 using std::unordered_set;

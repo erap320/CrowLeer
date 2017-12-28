@@ -1,6 +1,6 @@
 #pragma once
 
-#include "conditions.h"
+#include "conditions.hpp"
 #include <string>
 #include <network\uri.hpp>
 
