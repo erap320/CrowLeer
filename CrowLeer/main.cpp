@@ -19,6 +19,7 @@ string url;
 int maxdepth = 0;
 rule followCondition; //conditions to choose what to crawl
 rule saveCondition; //condition to choose what to download
+regex excludeCondition; //condition to exclude certain URLs, like a negative global follow condition
 bool save = false; //flag to activate the saving of files, changed with the -S option
 //String of the path where to save files
 string pathString;
@@ -42,7 +43,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 			if (oktoread)
 			{
 				current = todo.front();
-				if (current.check(followCondition) && (maxdepth==0 ? true : (current.depth<=maxdepth)) )
+				if (!regex_match(current.tostring(), excludeCondition) && current.check(followCondition) && (maxdepth==0 ? true : (current.depth<=maxdepth)) )
 				{
 					follow = true;
 					url = current.tostring();
@@ -101,6 +102,9 @@ int main(int argc, char *argv[])
 	fs::path directory;
 	pathString = fs::current_path().string();
 
+	//Default value for the excludeCondition, not to match anything
+	excludeCondition = "(?!)";
+
 	/* getopt_long stores the option index here. */
 	static struct option long_options[] =
 	{
@@ -111,6 +115,7 @@ int main(int argc, char *argv[])
 		{ "same-domain",	required_argument,	0,	'x' },
 		{ "save",			required_argument,	0,	'S' },
 		{ "output",			required_argument,	0,	'o' },
+		{ "exclude",		required_argument,	0,	'e' },
 		{ "f-global",		required_argument,	0,	'f' },
 		{ "f-protocol",		required_argument,	0,	'f' },
 		{ "f-domain",		required_argument,	0,	'f' },
@@ -134,7 +139,7 @@ int main(int argc, char *argv[])
 	{
 		int option_index = 0;
 
-		opt = getopt_long(argc, argv, "hu:xSo:t:d:f:s:", long_options, &option_index);
+		opt = getopt_long(argc, argv, "hu:xSo:e:t:d:f:s:", long_options, &option_index);
 
 		/* Detect the end of the options. */
 		if (opt == -1)
@@ -183,6 +188,12 @@ int main(int argc, char *argv[])
 			pathString.clear();
 			pathString.append(optarg);
 			cout << "Output directory for saved files changed to " << optarg << endl;
+			break;
+		}
+		case 'e':
+		{
+			excludeCondition = optarg;
+			cout << "Exclude rule: " << optarg << endl;
 			break;
 		}
 		case 'f':

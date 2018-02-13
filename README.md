@@ -13,6 +13,7 @@
 | -x --same-domain                                                                        | Quick flag to only follow URLs with the same domain as the starting URL, overrides the --f-domain option |
 | -S --save                                                                               | Activates the download functionality of CrowLeer. If not used nothing will be saved on the disk          |
 | -o --output                                                                             | Choose a directory where the selected files will be saved. The default value is the current directory    |
+| -e --exclude                                                                            | Rule tested on the whole parsed URL, excludes the URL from the crawling and saving steps if matched      |
 | --f-global                                                                              | Follow rule to be tested on the whole parsed URL                                                         |
 | --f-protocol --f-domain --f-path --f--filename --f-extension --f-querystring --f-anchor | Follow rules on single parts of parsed URLs                                                              |
 | --s-global                                                                              | Save rule to be tested on the whole parsed URL                                                           |
@@ -22,14 +23,14 @@
 
 CrowLeer uses Regular Expressions (https://en.wikipedia.org/wiki/Regular_expression) to apply conditions to URLs or parts of URLs.
 
-Both rules have a global component, that matches the Completed URL (see the URL section) and one for every URL part.
-
-There are two rules: Follow Rule and Save Rule.
+The Follow and Save rules have a global component, that matches the Completed URL (see the URL section) and one for every URL part.
+The Exclude rule only has a global component.
 
 * Follow Rule: describes pages to follow while crawling
 * Save Rule: describes pages to download and save locally
+* Exclude Rule: describes pages to completely exclude from the crawling
 
-If not specified every rule is set to match anything. You can set every possible composition of rules to describe the exact scenario you need, including global rule and parts rules together.
+If not specified every rule is set to match anything (with the exclude rule matching nothing). You can set every possible composition of rules to describe the exact scenario you need, including global rule and parts rules together.
 
 ## URLs:
 
@@ -68,6 +69,11 @@ The URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split i
 | extension   | ""                 |
 | querystring | "s=canis"          |
 | anchor      | "Origin"           |
+
+## Progress information
+
+Every line of the information shown corresponds to the crawling of one URL. The structure of the lines is the following:
+```Number of pages left >> Currently crawled URL : Depth of the URL```
 
 ## Third party libraries
 
