@@ -73,7 +73,7 @@ The URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split i
 ## Progress information
 
 Every line of the information shown corresponds to the crawling of one URL. The structure of the lines is the following:
-```Number of pages left >> Currently crawled URL : Depth of the URL```
+```Number of URLs left >> Currently crawled URL : Depth of the URL```
 
 ## Third party libraries
 
