@@ -1,6 +1,6 @@
 # CrowLeer, the fast and reliable CLI web crawler with focus on pages download
 
-## Windows x64 executable: [DOWNLOAD](http://erapspace.altervista.org/downloads/CrowLeer.rar)
+## Download the latest version: [Releases](https://github.com/ERap320/CrowLeer/releases)
 
 ## Options:
 
@@ -72,7 +72,7 @@ The URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split i
 
 ## Progress information
 
-Every line of the information shown corresponds to the crawling of one URL. The structure of the lines is the following:
+Every line of the information shown in the console corresponds to the crawling of one URL. The structure of the lines is the following:
 ```Number of URLs left >> Currently crawled URL : Depth of the URL```
 
 ## Third party libraries
