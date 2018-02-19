@@ -1,5 +1,7 @@
 # CrowLeer, the fast and reliable CLI web crawler with focus on pages download
 
+[![Build status](https://ci.appveyor.com/api/projects/status/f0flhq9s2ujyiibu?svg=true)](https://ci.appveyor.com/project/ERap320/crowleer)
+
 ## Download the latest version: [Releases](https://github.com/ERap320/CrowLeer/releases)
 
 ## Options:
