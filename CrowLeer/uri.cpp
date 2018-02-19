@@ -155,7 +155,7 @@ uri parse(string original, uri* const parent)
 						completion += parent->path;
 						if (relative == "..")
 						{
-							pos = completion.find_last_of("/");
+							pos = (int)completion.find_last_of("/");
 							if (pos != string::npos)
 								completion.erase(pos);
 						}
@@ -201,8 +201,8 @@ uri parse(string original, uri* const parent)
 		temp.anchor = support.fragment().to_string();
 
 		//Check if there is a filename in the path
-		int lastslash = temp.path.find_last_of("/");
-		pos = temp.path.find_last_of(".");
+		int lastslash = (int)temp.path.find_last_of("/");
+		pos = (int)temp.path.find_last_of(".");
 		if (pos != string::npos && lastslash != string::npos && lastslash < pos)
 		{
 			temp.filename = temp.path.substr(lastslash + 1, pos-lastslash-1);

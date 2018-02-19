@@ -71,11 +71,12 @@ bool writeToDisk(const string& str, fs::path path)
 		return false;
 	out << str;
 	out.close();
+	return true;
 }
 
 int findhref(const string& response, int offset)
 {
-	int pos; //Holds the position of the string searched for in the response
+	size_t pos; //Holds the position of the string searched for in the response
 
 	int i;
 	pos = response.find("href", offset); //Find the string "href"
@@ -83,8 +84,8 @@ int findhref(const string& response, int offset)
 	while (pos < response.length())
 	{
 		if (pos == string::npos) //If the string is not in the response
-			return pos;
-		for (i = pos + 4; response[i] == ' '; i++) //Point to the first non-space char
+			return (int)pos;
+		for (i = (int)(pos + 4); response[i] == ' '; i++) //Point to the first non-space char
 			;
 		//Check if the href is followed by =' or ="
 		if (response[i] == '=')
@@ -92,17 +93,19 @@ int findhref(const string& response, int offset)
 			for (i++; response[i] == ' '; i++)
 				;
 			if (response[i] == '\'' || response[i] == '"')
-				return pos;
+				return (int)pos;
 		}
 		pos = response.find("href", i); //Look for the next href
 	}
+
+	return -1;
 }
 
 
 void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, bool saveflag, uri* const parent)
 {
-	int pos; //Holds the position of the string searched for in the response
-	int before, after; //Hold the position of opening and closing quote of the href property
+	size_t pos; //Holds the position of the string searched for in the response
+	size_t before, after; //Hold the position of opening and closing quote of the href property
 	string extracted;
 	uri temp;
 
@@ -125,14 +128,14 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 			}
 		queueMutex.unlock();
 
-		pos = findhref(response, after + 1);
+		pos = findhref(response, (int)(after + 1));
 	}
 }
 
 string validate(string url)
 {
 	url = trim(url);
-	int pos;
+	size_t pos;
 	pos = url.find("://");
 	if (pos == string::npos)
 		url = "http://" + url;

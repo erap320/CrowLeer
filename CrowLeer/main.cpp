@@ -16,7 +16,7 @@ int thrnum = 10;
 
 //Variables to initialize
 string url;
-int maxdepth = 0;
+unsigned int maxdepth = 0;
 rule followCondition; //conditions to choose what to crawl
 rule saveCondition; //condition to choose what to download
 regex excludeCondition; //condition to exclude certain URLs, like a negative global follow condition
