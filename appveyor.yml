@@ -1,0 +1,20 @@
+version: 1.1.{build}
+branches:
+  only:
+  - master
+image: Previous Visual Studio 2017
+configuration: Release
+platform: x64
+build:
+  verbosity: minimal
+artifacts:
+- path: x64\Release\CrowLeer.exe
+  name: CrowLeer_Win64.exe
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: QHmCKIXtgFHu2UTzPJskGlDPGTRNUbUCThhBJ4blC159Ks0meb6qyR/fE7ssqQ1q
+  artifact: CrowLeer_Win64.exe
+  draft: true
+  on:
+    appveyor_repo_tag: true
