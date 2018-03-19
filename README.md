@@ -1,8 +1,6 @@
 # CrowLeer, the fast and reliable CLI web crawler with focus on pages download
 
-[![Build status](https://ci.appveyor.com/api/projects/status/f0flhq9s2ujyiibu?svg=true)](https://ci.appveyor.com/project/ERap320/crowleer) [![License: ISC](https://camo.githubusercontent.com/5cee7f5de5764b2350a876e3d821d10e8b6cc56c/687474703a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d4953432d627269676874677265656e2e737667)](https://github.com/ERap320/CrowLeer/blob/master/LICENSE.txt)
-
-[![BuyMeACoffee](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://buymeacoff.ee/erap320)
+[![Build status](https://ci.appveyor.com/api/projects/status/f0flhq9s2ujyiibu?svg=true)](https://ci.appveyor.com/project/ERap320/crowleer) [![License: ISC](https://img.shields.io/badge/license-ISC-brightgreen.svg)](https://github.com/ERap320/CrowLeer/blob/master/LICENSE.txt) [![BuyMeACoffee](https://img.shields.io/badge/coffee-donate-yellow.svg)](https://buymeacoff.ee/erap320)
 
 # Download the latest version: [Releases](https://github.com/ERap320/CrowLeer/releases)
 
