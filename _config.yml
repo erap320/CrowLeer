@@ -1,1 +1,4 @@
+title: CrowLeer
+description: The fast and flexible C++ web crawler based on libcurl
+show_downloads: true
 theme: jekyll-theme-slate
