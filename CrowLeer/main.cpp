@@ -1,6 +1,8 @@
 #include <iostream>
 #include <thread>
 
+#include <fstream>
+
 //Other project headers
 #include "uri.hpp"
 #include "utils.hpp"
@@ -26,6 +28,7 @@ string pathString;
 
 void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 {
+
 	string url;
 	string response;
 	uri current;
@@ -47,28 +50,32 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 				{
 					follow = true;
 					url = current.tostring();
+					download = save && current.check(saveCondition);
 					consoleMutex.lock();
-						cout << todo.size() << " >> " << url << " : " << current.depth << endl;
+						cout << todo.size() << " >> ";
+						special_out(url, download);
+						cout << " : " << current.depth << endl;
 					consoleMutex.unlock();
 				}
 				todo.pop();
 			}
 		queueMutex.unlock();
 
-		download = save && current.check(saveCondition);
-
 		//Save the file in the correct directory
-		if (follow || download)
+		if (oktoread && (follow || download) )
 		{
 			response = HTTPrequest(url);
 
 			if (follow)
+			{
 				crawl(response, urls, todo, save, &current);
+			}
 			if (download)
 			{
 				directory = pathString;
 				directory /= std::regex_replace(current.domain, regex(":|\\*|\\?|\"|<|>|\\|"), "");
 				directory /= std::regex_replace(current.path, regex(":|\\*|\\?|\"|<|>|\\|"), "");
+
 				if (!fs::exists(directory))
 				{
 					if (fs::create_directories(directory))
@@ -77,6 +84,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 							directory /= "index.html";
 						else
 							directory /= current.filename + "." + current.extension;
+					
 						writeToDisk(response, directory);
 					}
 					else
@@ -84,9 +92,17 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 						error_out("Could not create folder for URL " + url);
 					}
 				}
+				else
+				{
+					if (current.filename.empty())
+						directory /= "index.html";
+					else
+						directory /= current.filename + "." + current.extension;
+
+					writeToDisk(response, directory);
+				}
 			}
 		}
-
 	}
 }
 
@@ -187,6 +203,7 @@ int main(int argc, char *argv[])
 		{
 			pathString.clear();
 			pathString.append(optarg);
+			pathString = std::regex_replace(pathString, regex("\\*|\\?|\"|<|>|\\|"), "");
 			cout << "Output directory for saved files changed to " << optarg << endl;
 			break;
 		}
@@ -319,8 +336,10 @@ int main(int argc, char *argv[])
 	response = HTTPrequest(url);
 
 	uri base(url);
-	if (sameDomain)
+	if (sameDomain) {
 		followCondition.domain = std::regex_replace(base.domain, regex("\\."), "\\.");
+		saveCondition.domain = followCondition.domain;
+	}
 
 	unordered_set<string> urls; //Hash table which contains the URLs found in the response
 	queue<uri> todo; //Queue containing the urls left to crawl
@@ -333,8 +352,17 @@ int main(int argc, char *argv[])
 		directory = pathString;
 		directory /= base.domain;
 		directory /= base.path;
+
 		if (!fs::exists(directory))
-			fs::create_directories(directory);
+		{
+			try {
+				fs::create_directories(directory);
+			}
+			catch(fs::filesystem_error e){
+				error_out("An error occurred while creating the output directory. Make sure the path is valid and check the folders' permissions");
+				return 1;
+			}
+		}
 		if (base.filename.empty())
 			directory /= "index.html";
 		else

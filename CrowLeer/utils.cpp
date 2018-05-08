@@ -145,8 +145,17 @@ string validate(string url)
 void error_out(string s)
 {
 	consoleMutex.lock();
-	Color('r');
-	cout << s << endl;
-	Color('w');
+		Color('r');
+		cout << s << endl;
+		Color('w');
 	consoleMutex.unlock();
+}
+
+void special_out(string s, bool color)
+{
+	if(color)
+		Color('g');
+	cout << s;
+	if(color)
+		Color('w');
 }

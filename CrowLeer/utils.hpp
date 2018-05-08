@@ -40,3 +40,7 @@ string validate(string url);
 
 //Outputs error text to console
 void error_out(string s);
+
+//Outputs text with a special color if the flag is raised
+//Only to be used inside a mutex block!
+void special_out(string s, bool color);

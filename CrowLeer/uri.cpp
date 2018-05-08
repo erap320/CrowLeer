@@ -193,22 +193,27 @@ uri parse(string original, uri* const parent)
 		//Convert resulting parts to our uri class
 		temp.protocol = support.scheme().to_string();
 		temp.domain = support.authority().to_string();
+
+		//Split the path in the correct parts
 		temp.path = support.path().to_string();
-		temp.path.erase(0, 1);
+		//Remove trailing slash
 		if (temp.path.back() == '/')
 			temp.path.pop_back();
-		temp.querystring = support.query().to_string();
-		temp.anchor = support.fragment().to_string();
-
 		//Check if there is a filename in the path
 		int lastslash = (int)temp.path.find_last_of("/");
 		pos = (int)temp.path.find_last_of(".");
 		if (pos != string::npos && lastslash != string::npos && lastslash < pos)
 		{
-			temp.filename = temp.path.substr(lastslash + 1, pos-lastslash-1);
-			temp.extension = temp.path.substr(pos+1);
+			temp.filename = temp.path.substr(lastslash + 1, pos - lastslash - 1);
+			temp.extension = temp.path.substr(pos + 1);
 			temp.path.erase(lastslash);
 		}
+		//Remove starting slash if still there
+		if (temp.path.front() == '/')
+			temp.path.erase(0,1);
+
+		temp.querystring = support.query().to_string();
+		temp.anchor = support.fragment().to_string();
 	}
 	//The original URL can't be parsed
 	catch (network::uri_syntax_error e)
