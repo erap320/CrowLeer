@@ -17,5 +17,5 @@ deploy:
     secure: QHmCKIXtgFHu2UTzPJskGlDPGTRNUbUCThhBJ4blC159Ks0meb6qyR/fE7ssqQ1q
   artifact: CrowLeer_Win64.exe
   draft: true
-  on:
-    appveyor_repo_tag: true
+#  on:
+#    appveyor_repo_tag: true
