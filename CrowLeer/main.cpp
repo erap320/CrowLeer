@@ -78,17 +78,17 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 				if (!fs::exists(directory))
 				{
-					if (fs::create_directories(directory))
-					{
+					try {
+						fs::create_directories(directory);
+
 						if (current.filename.empty())
 							directory /= "index.html";
 						else
 							directory /= current.filename + "." + current.extension;
-					
+
 						writeToDisk(response, directory);
 					}
-					else
-					{
+					catch (fs::filesystem_error e) {
 						error_out("Could not create folder for URL " + url);
 					}
 				}
