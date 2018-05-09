@@ -28,7 +28,6 @@ string pathString;
 
 void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 {
-
 	string url;
 	string response;
 	uri current;
@@ -89,7 +88,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 						writeToDisk(response, directory);
 					}
 					catch (fs::filesystem_error e) {
-						error_out("Could not create folder for URL " + url);
+						error_out( (string)e.what() + " : Could not create folder for URL " + url);
 					}
 				}
 				else
@@ -359,7 +358,7 @@ int main(int argc, char *argv[])
 				fs::create_directories(directory);
 			}
 			catch(fs::filesystem_error e){
-				error_out("An error occurred while creating the output directory. Make sure the path is valid and check the folders' permissions");
+				error_out( (string)e.what() + " : An error occurred while creating the output directory. Make sure the path is valid and check the folders' permissions");
 				return 1;
 			}
 		}

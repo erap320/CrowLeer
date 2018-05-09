@@ -132,6 +132,11 @@ uri parse(string original, uri* const parent)
 			str.erase(0, 1);
 		}
 	}
+	else {
+		pos = (int)str.find_last_of(":");
+		if (pos == string::npos)
+			relative = '/';
+	}
 
 	//Completion
 	if (!relative.empty())
@@ -218,8 +223,7 @@ uri parse(string original, uri* const parent)
 	//The original URL can't be parsed
 	catch (network::uri_syntax_error e)
 	{
-		error_out(">> Parsing error on " + original + "\n   Found in " + parent->tostring());
-
+		error_out(">> Parsing error on " + original + "\n   Found in " + parent->tostring() + " : " + (string)e.what() );
 	}
 
 	return temp;
