@@ -2,9 +2,10 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/f0flhq9s2ujyiibu?svg=true)](https://ci.appveyor.com/project/ERap320/crowleer) [![License: ISC](https://img.shields.io/badge/license-ISC-brightgreen.svg)](https://github.com/ERap320/CrowLeer/blob/master/LICENSE.txt) [![BuyMeACoffee](https://img.shields.io/badge/coffee-donate-yellow.svg)](https://buymeacoff.ee/erap320)
 
-# Download the latest version: [Releases](https://github.com/ERap320/CrowLeer/releases)
+## Install and update with [Chocolatey](https://chocolatey.org/packages/crowleer/)
+## Download the latest version: [Releases](https://github.com/ERap320/CrowLeer/releases)
 
-## Options:
+### Options:
 
 | Option                                                                                  | Description                                                                                              |
 |-----------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
@@ -21,7 +22,7 @@
 | --s-global                                                                              | Save rule to be tested on the whole parsed URL                                                           |
 | --s-protocol --s-domain --s-path --s--filename --s-extension --s-querystring --s-anchor | Save rules on single parts of parsed URLs                                                                |
 
-## Rules:
+### Rules:
 
 CrowLeer uses Regular Expressions (https://en.wikipedia.org/wiki/Regular_expression) to apply conditions to URLs or parts of URLs.
 
@@ -34,7 +35,7 @@ The Exclude rule only has a global component.
 
 If not specified every rule is set to match anything (with the exclude rule matching nothing). You can set every possible composition of rules to describe the exact scenario you need, including global rule and parts rules together.
 
-## URLs:
+### URLs:
 
 CrowLeer completes the URLs found in the crawled pages to make its and your work easier.
 
@@ -72,18 +73,20 @@ The URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split i
 | querystring | "s=canis"          |
 | anchor      | "Origin"           |
 
-## Progress information
+### Progress information
 
 Every line of the information shown in the console corresponds to the crawling of one URL. The structure of the lines is the following:
 ```Number of URLs left >> Currently crawled URL : Depth of the URL```
+When the saving feature is activated, the URLs of pages that meet the Save Condition will be highlighted in green.
 
-## Third party libraries
+### Third party libraries
 
 * [curl 7.57.0](https://curl.haxx.se/)
 * [cpp-netlib URI](https://github.com/cpp-netlib/uri)
 
 ## Repositories
 This project is pushed to both GitHub and GitLab:
+
 * [GitLab Repository](https://gitlab.com/ERap320/CrowLeer)
 * [GitHub Repository](https://github.com/ERap320/CrowLeer)
 
