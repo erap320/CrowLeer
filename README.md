@@ -77,6 +77,7 @@ The URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split i
 
 Every line of the information shown in the console corresponds to the crawling of one URL. The structure of the lines is the following:
 ```Number of URLs left >> Currently crawled URL : Depth of the URL```
+
 When the saving feature is activated, the URLs of pages that meet the Save Condition will be highlighted in green.
 
 ### Third party libraries
