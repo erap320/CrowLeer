@@ -8,7 +8,69 @@
 #include "utils.hpp"
 #include "getopt.h"
 
-#define HELP_MSG "CrowLeer v1.3\nFast and reliable CLI web crawler with focus on pages download\n\n>>USAGE: crowleer [options]\n\n>>OPTIONS:\n  -h --help\t\tView this help page\n  -u --url\t\tURL used to start crawling\n  -t --thread\t\tNumber of threads used\n  -d --depth\t\tMaximum crawling depth (the starting URL spcified in -u is at depth 0)\n  -x --same-domain\t\tQuick flag to only follow URLs with the same domain as the starting URL, overrides the --f-domain option\n  -S --save\t\tActivates the download functionality of CrowLeer. If not used nothing will be saved on the disk\n  -o --output\t\tChoose a directory where the selected files will be saved. The default value is the current directory\n  --f-global\t\tFollow rule to be tested on the whole parsed URL\t\t\n  --f-protocol\t\tFollow rules on single parts of parsed URLs\n  --f-domain\n  --f-path\n  --f-filename\n  --f-extension\n  --f-querystring\t\n  --f-anchor\n  --s-global\t\tSave rule to be tested on the whole parsed URL\t\t\n  --s-protocol\t\tSave rules on single parts of parsed URLs\n  --s-domain\n  --s-path\n  --s-filename\n  --s-extension\n  --s-querystring\n  --s-anchor\n\n>>RULES:\nCrowLeer uses Regular Expressions (https://en.wikipedia.org/wiki/Regular_expression) to apply conditions to URLs or parts of URLs.\nBoth rules have a global component, that matches the Completed URL (see the URL section) and one for every URL part.\nThere are two rules: Follow Rule and Save Rule.\n  - Follow Rule: describes pages to follow while crawling\n  - Save Rule: describes pages to download and save locally\nIf not specified every rule is set to match everything. You can set every possible composition of rules to describe the exact scenario you need, including global rule and parts rules together.\n\n>>URLs:\nCrowLeer completes the URLs found in the crawled pages to make its and your work easier.\nEvery URL is split in parts and completed with parts from the URL of the page it was found in if necessary.\nThe parts in which a URL is split are: protocol, domain, path, filename, extension, querystring and anchor.\n\nExample: the URL \"/example/one/file.txt\" was found while running on \"https://erap.space\"\n  The Completed URL will be \"https://erap.space/example/one/file.txt\", and its parts will be:\n  - protocol: \"https\"\n  - domain: \"erap.space\"\n  - path: \"example/one\"\n  - filename: \"file\"\n  - extension: \"txt\"\n  - querystring: \"\"\n  - anchor: \"\"\n\nExample: the URL \"https://en.wikipedia.org/wiki/Dog?s=canis#Origin\" will be split in parts this way:\n  - protocol: \"https\"\n  - domain: \"en.wikipedia.org\"\n  - path: \"wiki/Dog\"\n  - filename: \"\"\n  - extension: \"\"\n  - querystring: \"s=canis\"\n  - anchor: \"Origin\""
+#define HELP_MSG "\
+CrowLeer v1.4\nFast and reliable CLI web crawler with focus on pages download\n\
+For more information visit https://github.com/ERap320/CrowLeer\n\n\
+>>USAGE: crowleer [options]\n\
+\n\
+>>OPTIONS:\n\
+  -h --help\t\tView this help page\n\
+  -u --url\t\tURL used to start crawling\n\
+  -t --thread\t\tNumber of threads used\n\
+  -d --depth\t\tMaximum crawling depth (the starting URL spcified in -u is at depth 0)\n\
+  -x --same-domain\tQuick flag to only follow URLs with the same domain as the starting URL, overrides the --f-domain option\n\
+  -S --save\t\tActivates the download functionality of CrowLeer. If not used nothing will be saved on the disk\n\
+  -o --output\t\tChoose a directory where the selected files will be saved. The default value is the current directory\n\
+  -c --curl-opt\t\tName of the custom CURL option to use when downloading pages. Only to use before the -p flag that specifies the parameter for the option. Can be used multiple times to set more than one option\n\
+  -p --curl-param\tValue of the custom CURL option specified before it with the -c flag\n\
+  --f-global\t\tFollow rule to be tested on the whole parsed URL\t\t\n\
+  --f-protocol\t\tFollow rules on single parts of parsed URLs\n\
+  --f-domain\n\
+  --f-path\n\
+  --f-filename\n\
+  --f-extension\n\
+  --f-querystring\t\n\
+  --f-anchor\n\
+  --s-global\t\tSave rule to be tested on the whole parsed URL\t\t\n\
+  --s-protocol\t\tSave rules on single parts of parsed URLs\n\
+  --s-domain\n\
+  --s-path\n\
+  --s-filename\n\
+  --s-extension\n\
+  --s-querystring\n\
+  --s-anchor\n\
+\n\
+>>RULES:\n\
+CrowLeer uses Regular Expressions (https://en.wikipedia.org/wiki/Regular_expression) to apply conditions to URLs or parts of URLs.\n\
+Both rules have a global component, that matches the Completed URL (see the URL section) and one for every URL part.\n\
+There are two rules: Follow Rule and Save Rule.\n\
+  - Follow Rule: describes pages to follow while crawling\n\
+  - Save Rule: describes pages to download and save locally\n\
+If not specified every rule is set to match everything. You can set every possible composition of rules to describe the exact scenario you need, including global rule and parts rules together.\n\
+\n\
+>>URLs:\n\
+CrowLeer completes the URLs found in the crawled pages to make its and your work easier.\n\
+Every URL is split in parts and completed with parts from the URL of the page it was found in if necessary.\n\
+The parts in which a URL is split are: protocol, domain, path, filename, extension, querystring and anchor.\n\
+\n\
+Example: the URL \"/example/one/file.txt\" was found while running on \"https://erap.space\"\n\
+  The Completed URL will be \"https://erap.space/example/one/file.txt\", and its parts will be:\n\
+  - protocol: \"https\"\n\
+  - domain: \"erap.space\"\n\
+  - path: \"example/one\"\n\
+  - filename: \"file\"\n\
+  - extension: \"txt\"\n\
+  - querystring: \"\"\n\
+  - anchor: \"\"\n\
+\n\
+Example: the URL \"https://en.wikipedia.org/wiki/Dog?s=canis#Origin\" will be split in parts this way:\n\
+  - protocol: \"https\"\n\
+  - domain: \"en.wikipedia.org\"\n\
+  - path: \"wiki/Dog\"\n\
+  - filename: \"\"\n\
+  - extension: \"\"\n\
+  - querystring: \"s=canis\"\n\
+  - anchor: \"Origin\""
 
 using std::cout; using std::cin; using std::endl;
 using std::thread;
@@ -23,8 +85,12 @@ rule followCondition; //conditions to choose what to crawl
 rule saveCondition; //condition to choose what to download
 regex excludeCondition; //condition to exclude certain URLs, like a negative global follow condition
 bool save = false; //flag to activate the saving of files, changed with the -S option
+
 //String of the path where to save files
 string pathString;
+
+//Option struct used to store curl options until pushed
+curl_option temp_option;
 
 void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 {
@@ -108,6 +174,9 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 int main(int argc, char *argv[])
 {
+	//Used to initialize custom curl options map
+	curl_options_init();
+
 	//Condition to use the -s flag
 	bool sameDomain = false;
 
@@ -148,6 +217,8 @@ int main(int argc, char *argv[])
 		{ "s-extension",	required_argument,	0,	's' },
 		{ "s-querystring",	required_argument,	0,	's' },
 		{ "s-anchor",		required_argument,	0,	's' },
+		{ "curl-opt",		required_argument,	0,	'c' },
+		{ "curl-param",		required_argument,	0,	'p' },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -155,7 +226,7 @@ int main(int argc, char *argv[])
 	{
 		int option_index = 0;
 
-		opt = getopt_long(argc, argv, "hu:xSo:e:t:d:f:s:", long_options, &option_index);
+		opt = getopt_long(argc, argv, "hu:xSo:e:t:d:f:s:c:p:", long_options, &option_index);
 
 		/* Detect the end of the options. */
 		if (opt == -1)
@@ -301,6 +372,37 @@ int main(int argc, char *argv[])
 			}
 			break;
 		}
+		case 'c':
+		{
+			if (!temp_option.name.empty())
+			{
+				cout << "Trying to set the " << optarg << "option without giving a parameter for " << temp_option.name  << endl;
+				return 0;
+			}
+			if (optcode.find(string(optarg)) == optcode.end())
+			{
+				cout << optarg << " is not a CURL option" << endl;
+				return 0;
+			}
+				
+			temp_option.name = optarg;
+			break;
+		}
+		case 'p':
+		{
+			if (temp_option.name.empty())
+			{
+				cout << "No option name specified before '" << optarg << "'" << endl;
+				return 0;
+			}
+
+			temp_option.parameter = optarg;
+			options.push_back(temp_option);
+			cout << "CURL option: " << temp_option.name << "='" << temp_option.parameter << "'"  << endl;
+			temp_option.name.clear();
+			temp_option.parameter.clear();
+			break;
+		}
 		case ':':
 		{
 			cout << "Missing value for option -" << (char)optopt << endl;
@@ -344,7 +446,9 @@ int main(int argc, char *argv[])
 	unordered_set<string> urls; //Hash table which contains the URLs found in the response
 	queue<uri> todo; //Queue containing the urls left to crawl
 
-	cout << todo.size() << " >> " << url << " : " << base.depth << endl;
+	cout << todo.size() << " >> ";
+	special_out(url, save && base.check(saveCondition));
+	cout << " : " << base.depth << endl;
 
 	//Check if the starting url has to be saved
 	if (save && base.check(saveCondition))

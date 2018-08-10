@@ -7,20 +7,22 @@
 
 ### Options:
 
-| Option                                                                                  | Description                                                                                              |
-|-----------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| -h --help                                                                               | View this help page                                                                                      |
-| -u --url                                                                                | URL used to start crawling                                                                               |
-| -t --threads                                                                            | Number of threads used                                                                                   |
-| -d --depth                                                                              | Maximum crawling depth (the starting URL spcified in -u is at depth 0)                                   |
-| -x --same-domain                                                                        | Quick flag to only follow URLs with the same domain as the starting URL, overrides the --f-domain option |
-| -S --save                                                                               | Activates the download functionality of CrowLeer. If not used nothing will be saved on the disk          |
-| -o --output                                                                             | Choose a directory where the selected files will be saved. The default value is the current directory    |
-| -e --exclude                                                                            | Rule tested on the whole parsed URL, excludes the URL from the crawling and saving steps if matched      |
-| --f-global                                                                              | Follow rule to be tested on the whole parsed URL                                                         |
-| --f-protocol --f-domain --f-path --f--filename --f-extension --f-querystring --f-anchor | Follow rules on single parts of parsed URLs                                                              |
-| --s-global                                                                              | Save rule to be tested on the whole parsed URL                                                           |
-| --s-protocol --s-domain --s-path --s--filename --s-extension --s-querystring --s-anchor | Save rules on single parts of parsed URLs                                                                |
+| Option                                                                                  | Description                                                                                                                                                                                         |
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -h --help                                                                               | View this help page                                                                                                                                                                                 |
+| -u --url                                                                                | URL used to start crawling                                                                                                                                                                          |
+| -t --threads                                                                            | Number of threads used                                                                                                                                                                              |
+| -d --depth                                                                              | Maximum crawling depth (the starting URL spcified in -u is at depth 0)                                                                                                                              |
+| -x --same-domain                                                                        | Quick flag to only follow URLs with the same domain as the starting URL, overrides the --f-domain option                                                                                            |
+| -S --save                                                                               | Activates the download functionality of CrowLeer. If not used nothing will be saved on the disk                                                                                                     |
+| -o --output                                                                             | Choose a directory where the selected files will be saved. The default value is the current directory                                                                                               |
+| -e --exclude                                                                            | Rule tested on the whole parsed URL, excludes the URL from the crawling and saving steps if matched                                                                                                 |
+| -c --curl-opt                                                                           | Name of the custom CURL option to use when downloading pages. Only to use before the -p flag that specifies the parameter for the option. Can be used multiple times to set more than one option |
+| -p --curl-param                                                                         | Value of the custom CURL option specified before it with the -c flag                                                                                                                                |
+| --f-global                                                                              | Follow rule to be tested on the whole parsed URL                                                                                                                                                    |
+| --f-protocol --f-domain --f-path --f--filename --f-extension --f-querystring --f-anchor | Follow rules on single parts of parsed URLs                                                                                                                                                         |
+| --s-global                                                                              | Save rule to be tested on the whole parsed URL                                                                                                                                                      |
+| --s-protocol --s-domain --s-path --s--filename --s-extension --s-querystring --s-anchor | Save rules on single parts of parsed URLs                                                                                                                                                           |
 
 ### Rules:
 
@@ -79,6 +81,19 @@ Every line of the information shown in the console corresponds to the crawling o
 ```Number of URLs left >> Currently crawled URL : Depth of the URL```
 
 When the saving feature is activated, the URLs of pages that meet the Save Condition will be highlighted in green.
+
+### CURL Options
+Since CrowLeer uses CURL to download pages, you can set custom options to fine-tune every detail.
+For example, to set a custom User Agent you need to call CrowLeer with the following arguments:
+```crowleer -c "CURLOPT_USERAGENT" -p "MyCustomUA"```
+__Attention!__ The -c and -p arguments can only be used in this order
+
+It's possible to set how many options you want, by repeating -c and -p arguments. For example:
+```crowleer -c "CURLOPT_USERAGENT" -p "MyCustomUA" -c "CURLOPT_INTERFACE" -p "eth0"```
+
+Keep in mind that these options will be set for every request made by the program.
+Unfortunately, as of version 1.4, the only supported CURL options are the ones with string parameters.
+You can find a complete list of CURL options here: https://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 
 ### Third party libraries
 

@@ -2,10 +2,15 @@
 #include <string>
 #include <unordered_set>
 #include <queue>
+#include <vector>
 #include <mutex>
 #include <filesystem>
+#include <map>
 
 #include "uri.hpp"
+
+#define CURL_STATICLIB
+#include "curl.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -14,8 +19,20 @@ using std::unordered_set;
 using std::queue;
 using std::mutex;
 
+//Custom CURL option
+struct curl_option {
+	string name;
+	string parameter;
+};
+
 extern mutex queueMutex;
 extern mutex consoleMutex;
+extern std::vector<curl_option> options;
+extern std::map<string, CURLoption> optcode;
+
+void curl_options_init();
+
+CURLoption curl_option_value(string option);
 
 //Function used by CURL to add chunks of data to the response string
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
