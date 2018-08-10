@@ -78,6 +78,7 @@ The URL ```"https://en.wikipedia.org/wiki/Dog?s=canis#Origin"``` will be split i
 ### Progress information
 
 Every line of the information shown in the console corresponds to the crawling of one URL. The structure of the lines is the following:
+
 ```Number of URLs left >> Currently crawled URL : Depth of the URL```
 
 When the saving feature is activated, the URLs of pages that meet the Save Condition will be highlighted in green.
@@ -85,10 +86,13 @@ When the saving feature is activated, the URLs of pages that meet the Save Condi
 ### CURL Options
 Since CrowLeer uses CURL to download pages, you can set custom options to fine-tune every detail.
 For example, to set a custom User Agent you need to call CrowLeer with the following arguments:
+
 ```crowleer -c "CURLOPT_USERAGENT" -p "MyCustomUA"```
+
 __Attention!__ The -c and -p arguments can only be used in this order
 
 It's possible to set how many options you want, by repeating -c and -p arguments. For example:
+
 ```crowleer -c "CURLOPT_USERAGENT" -p "MyCustomUA" -c "CURLOPT_INTERFACE" -p "eth0"```
 
 Keep in mind that these options will be set for every request made by the program.
