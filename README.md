@@ -96,7 +96,9 @@ It's possible to set how many options you want, by repeating -c and -p arguments
 ```crowleer -c "CURLOPT_USERAGENT" -p "MyCustomUA" -c "CURLOPT_INTERFACE" -p "eth0"```
 
 Keep in mind that these options will be set for every request made by the program.
+
 Unfortunately, as of version 1.4, the only supported CURL options are the ones with string parameters.
+
 You can find a complete list of CURL options here: https://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 
 ### Third party libraries
