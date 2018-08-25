@@ -283,6 +283,18 @@ size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 
 string HTTPrequest(string url)
 {
+	CURLoption optnum;	//Custom option value
+	int type;	//Custom option type as described in the following definitions in curl.h
+
+	/*
+		#define CURLOPTTYPE_LONG          0
+		#define CURLOPTTYPE_OBJECTPOINT   10000
+		#define CURLOPTTYPE_STRINGPOINT   10000
+		#define CURLOPTTYPE_FUNCTIONPOINT 20000
+		#define CURLOPTTYPE_OFF_T         30000
+	*/
+
+
 	//CURL parameters
 	CURL *curl;
 	CURLcode res;
@@ -298,7 +310,27 @@ string HTTPrequest(string url)
 
 		for (auto it = options.begin(); it != options.end(); it++)
 		{
-			curl_easy_setopt(curl, curl_option_value(it->name), it->parameter);
+			optnum = curl_option_value(it->name);
+			type = optnum / 1000;
+
+			switch(type)
+			{
+				case 0: //Long
+				{
+					curl_easy_setopt(curl, optnum, std::stol(it->parameter));
+					break;
+				}
+				case 1: //String
+				{
+					curl_easy_setopt(curl, optnum, it->parameter);
+					break;
+				}
+				default: //Unsupported
+				{
+					cout << "Unsupported custom CURL option " << it->name << ", please contact the developer at battistonelia@erap.space about this issue" << endl;
+					break;
+				}
+			}
 		}
 
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);

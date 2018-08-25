@@ -9,7 +9,7 @@
 #include "getopt.h"
 
 #define HELP_MSG "\
-CrowLeer v1.4\nFast and reliable CLI web crawler with focus on pages download\n\
+CrowLeer v1.5\nFast and reliable CLI web crawler with focus on pages download\n\
 For more information visit https://github.com/ERap320/CrowLeer\n\n\
 >>USAGE: crowleer [options]\n\
 \n\
@@ -174,6 +174,9 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 int main(int argc, char *argv[])
 {
+
+	cout << "CrowLeer 1.5 by ERap320 [battistonelia@erap.space]\n\n";
+
 	//Used to initialize custom curl options map
 	curl_options_init();
 
@@ -384,8 +387,14 @@ int main(int argc, char *argv[])
 				cout << optarg << " is not a CURL option" << endl;
 				return 0;
 			}
+			if(curl_option_value(string(optarg))/1000 > 1 ) //See HTTPrequest definition in utils.cpp
+			{
+				cout << "Unsupported custom CURL option " << optarg << ", please contact the developer at battistonelia@erap.space about this issue" << endl;
+				return 0;
+			}
 				
 			temp_option.name = optarg;
+
 			break;
 		}
 		case 'p':
