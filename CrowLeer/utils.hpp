@@ -68,7 +68,8 @@ bool writeToDisk(const string& str, fs::path path);
 int findhref(const string& response, int offset);
 
 //Search for hrefs in the response, verify if it was already found elsewhere and eventually push it in the todo queue
-void crawl(const string& response, unordered_set<string>& data, queue<uri>& todo, bool saveflag, rule followCondition, uri* const parent = nullptr);
+//Excluded or too deep urls aren't pushed to the queue
+void crawl(const string& response, unordered_set<string>& data, queue<uri>& todo, bool saveflag, std::regex excludeCondition, int maxdepth, uri* const parent = nullptr);
 
 //Fixes initial urls to make them uri parsing compliant
 string validate(string url);

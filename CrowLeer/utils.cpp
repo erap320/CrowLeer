@@ -2,6 +2,7 @@
 #include "uri.hpp"
 #include "color.hpp"
 #include "timestamp.hpp"
+#include "conditions.hpp"
 
 #include <iostream>
 
@@ -433,7 +434,7 @@ int findhref(const string& response, int offset)
 }
 
 
-void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, bool saveflag, rule followCondition, uri* const parent)
+void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, bool saveflag, std::regex excludeCondition, int maxdepth,  uri* const parent)
 {
 	size_t pos; //Holds the position of the string searched for in the response
 	size_t before, after; //Hold the position of opening and closing quote of the href property
@@ -455,7 +456,8 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 			if (search == urls.end())
 			{
 				urls.insert(temp.tostring());
-				if (temp.check(followCondition))
+
+				if (!std::regex_match(temp.tostring(), excludeCondition) && (maxdepth == -1 ? true : (temp.depth <= maxdepth)) )
 				{
 					todo.push(temp);
 				}

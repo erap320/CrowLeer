@@ -81,7 +81,7 @@ int thrnum = 10;
 
 //Variables to initialize
 string url;
-unsigned int maxdepth = 0;
+unsigned int maxdepth = -1; //Set to the biggest int possible because of two's complement representation
 rule followCondition; //conditions to choose what to crawl
 rule saveCondition; //condition to choose what to download
 regex excludeCondition; //condition to exclude certain URLs, like a negative global follow condition
@@ -116,7 +116,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 			if (oktoread)
 			{
 				current = todo.front();
-				if (!regex_match(current.tostring(), excludeCondition) && current.check(followCondition) && (maxdepth==0 ? true : (current.depth<=maxdepth)) )
+				if (current.check(followCondition)) //Other rules are checked before inserting in the todo queue
 				{
 					follow = true;
 					url = current.tostring();
@@ -136,10 +136,8 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 		{
 			response = HTTPrequest(url);
 
-			if (follow)
-			{
-				crawl(response, urls, todo, save, followCondition, &current);
-			}
+			crawl(response, urls, todo, save, excludeCondition, maxdepth, &current);
+
 			if (download)
 			{
 				directory = pathString;
@@ -178,7 +176,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 int main(int argc, char *argv[])
 {
-	out << "CrowLeer 1.5 by ERap320 [battistonelia@erap.space]\n\n";
+	out << "CrowLeer 1.6 by ERap320 [battistonelia@erap.space]\n\n";
 
 	//Used to initialize custom curl options map
 	curl_options_init();
@@ -495,7 +493,7 @@ int main(int argc, char *argv[])
 		writeToDisk(response, directory);
 	}
 
-	crawl(response, urls, todo, save, followCondition, &base);
+	crawl(response, urls, todo, save, excludeCondition, maxdepth, &base);
 
 	thread *threads = new thread[thrnum];
 
