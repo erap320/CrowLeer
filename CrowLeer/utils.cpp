@@ -1,17 +1,51 @@
 #include "utils.hpp"
 #include "uri.hpp"
 #include "color.hpp"
+#include "timestamp.hpp"
 
 #include <iostream>
-#include <fstream>
 
-using std::cout; using std::cin;  using std::endl;
+using std::cout; using std::cin;
 using std::ofstream;
 
 mutex queueMutex;
 mutex consoleMutex;
+Output out;
 std::vector<curl_option> options;
 std::map<string, CURLoption> optcode;
+
+Output::~Output()
+{
+	if (log)
+	{
+		log << "\n\nWork ended at " << timestamp() << "\n";
+		log.close();
+	}
+}
+
+void Output::useLog(string name)
+{
+	log.open(name);
+	log << "Work started at " << timestamp() << "\n\n";
+}
+
+Output& operator<<(Output &out, string s)
+{
+	cout << s;
+	if (out.log)
+		out.log << s;
+
+	return out;
+}
+
+Output& operator<<(Output &out, int i)
+{
+	cout << i;
+	if (out.log)
+		out.log << i;
+
+	return out;
+}
 
 void curl_options_init()
 {
@@ -327,7 +361,7 @@ string HTTPrequest(string url)
 				}
 				default: //Unsupported
 				{
-					cout << "Unsupported custom CURL option " << it->name << ", please contact the developer at battistonelia@erap.space about this issue" << endl;
+					out << "Unsupported custom CURL option " << it->name << ", please contact the developer at battistonelia@erap.space about this issue\n";
 					break;
 				}
 			}
@@ -357,7 +391,7 @@ void debug_out(const unordered_set<string>& data)
 {
 	for (auto it = data.begin(); it != data.end(); it++)
 	{
-		cout << *it << endl;
+		out << *it << "\n";
 	}
 }
 
@@ -399,7 +433,7 @@ int findhref(const string& response, int offset)
 }
 
 
-void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, bool saveflag, uri* const parent)
+void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo, bool saveflag, rule followCondition, uri* const parent)
 {
 	size_t pos; //Holds the position of the string searched for in the response
 	size_t before, after; //Hold the position of opening and closing quote of the href property
@@ -421,14 +455,17 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 			if (search == urls.end())
 			{
 				urls.insert(temp.tostring());
-				todo.push(temp);
+				if (temp.check(followCondition))
+				{
+					todo.push(temp);
+				}
+
 			}
 		queueMutex.unlock();
 
 		pos = findhref(response, (int)(after + 1));
 	}
 }
-
 string validate(string url)
 {
 	url = trim(url);
@@ -443,7 +480,7 @@ void error_out(string s)
 {
 	consoleMutex.lock();
 		Color('r');
-		cout << s << endl;
+		out << s << "\n";
 		Color('w');
 	consoleMutex.unlock();
 }
@@ -452,7 +489,7 @@ void special_out(string s, bool color)
 {
 	if(color)
 		Color('g');
-	cout << s;
+	out << s;
 	if(color)
 		Color('w');
 }

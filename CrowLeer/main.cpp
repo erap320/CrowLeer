@@ -9,7 +9,7 @@
 #include "getopt.h"
 
 #define HELP_MSG "\
-CrowLeer v1.5\nFast and reliable CLI web crawler with focus on pages download\n\
+Fast and reliable CLI web crawler with focus on pages download\n\
 For more information visit https://github.com/ERap320/CrowLeer\n\n\
 >>USAGE: crowleer [options]\n\
 \n\
@@ -21,6 +21,7 @@ For more information visit https://github.com/ERap320/CrowLeer\n\n\
   -x --same-domain\tQuick flag to only follow URLs with the same domain as the starting URL, overrides the --f-domain option\n\
   -S --save\t\tActivates the download functionality of CrowLeer. If not used nothing will be saved on the disk\n\
   -o --output\t\tChoose a directory where the selected files will be saved. The default value is the current directory\n\
+  -l --log\t\tOutputs progress details to the specified log file. Works best if it's the first specified option, as it makes possible to log further settings of the current job\n\
   -c --curl-opt\t\tName of the custom CURL option to use when downloading pages. Only to use before the -p flag that specifies the parameter for the option. Can be used multiple times to set more than one option\n\
   -p --curl-param\tValue of the custom CURL option specified before it with the -c flag\n\
   --f-global\t\tFollow rule to be tested on the whole parsed URL\t\t\n\
@@ -72,7 +73,7 @@ Example: the URL \"https://en.wikipedia.org/wiki/Dog?s=canis#Origin\" will be sp
   - querystring: \"s=canis\"\n\
   - anchor: \"Origin\""
 
-using std::cout; using std::cin; using std::endl;
+using std::cin;
 using std::thread;
 
 //Number of threads used for crawling initialized with its default value
@@ -88,6 +89,9 @@ bool save = false; //flag to activate the saving of files, changed with the -S o
 
 //String of the path where to save files
 string pathString;
+
+//Path of the log file set with -l
+string logPath;
 
 //Option struct used to store curl options until pushed
 curl_option temp_option;
@@ -118,9 +122,9 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 					url = current.tostring();
 					download = save && current.check(saveCondition);
 					consoleMutex.lock();
-						cout << todo.size() << " >> ";
+						out << todo.size() << " >> ";
 						special_out(url, download);
-						cout << " : " << current.depth << endl;
+						out << " : " << current.depth << "\n";
 					consoleMutex.unlock();
 				}
 				todo.pop();
@@ -134,7 +138,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 			if (follow)
 			{
-				crawl(response, urls, todo, save, &current);
+				crawl(response, urls, todo, save, followCondition, &current);
 			}
 			if (download)
 			{
@@ -174,8 +178,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 
 int main(int argc, char *argv[])
 {
-
-	cout << "CrowLeer 1.5 by ERap320 [battistonelia@erap.space]\n\n";
+	out << "CrowLeer 1.5 by ERap320 [battistonelia@erap.space]\n\n";
 
 	//Used to initialize custom curl options map
 	curl_options_init();
@@ -203,6 +206,7 @@ int main(int argc, char *argv[])
 		{ "same-domain",	required_argument,	0,	'x' },
 		{ "save",			required_argument,	0,	'S' },
 		{ "output",			required_argument,	0,	'o' },
+		{ "log",			required_argument,	0,	'l' },
 		{ "exclude",		required_argument,	0,	'e' },
 		{ "f-global",		required_argument,	0,	'f' },
 		{ "f-protocol",		required_argument,	0,	'f' },
@@ -229,7 +233,7 @@ int main(int argc, char *argv[])
 	{
 		int option_index = 0;
 
-		opt = getopt_long(argc, argv, "hu:xSo:e:t:d:f:s:c:p:", long_options, &option_index);
+		opt = getopt_long(argc, argv, "hu:xSo:l:e:t:d:f:s:c:p:", long_options, &option_index);
 
 		/* Detect the end of the options. */
 		if (opt == -1)
@@ -239,38 +243,38 @@ int main(int argc, char *argv[])
 		{
 		case 'h':
 		{
-			cout << HELP_MSG << endl;
+			out << HELP_MSG << "\n";
 			return 0;
 			break;
 		}
 		case 'u':
 		{
-			cout << "Selected URL: " << optarg << endl;
+			out << "Selected URL: " << optarg << "\n";
 			url.append(optarg);
 			break;
 		}
 		case 't':
 		{
-			cout << "Threads number: " << optarg << endl;
+			out << "Threads number: " << optarg << "\n";
 			thrnum = atoi(optarg);
 			break;
 		}
 		case 'd':
 		{
-			cout << "Maximum depth: " << optarg << endl;
+			out << "Maximum depth: " << optarg << "\n";
 			maxdepth = atoi(optarg);
 			break;
 		}
 		case 'x':
 		{
 			sameDomain = true;
-			cout << "Same domain rule applied" << endl;
+			out << "Same domain rule applied\n";
 			break;
 		}
 		case 'S':
 		{
 			save = true;
-			cout << "Activate Save rule applied" << endl;
+			out << "Activate Save rule applied\n";
 			break;
 		}
 		case 'o':
@@ -278,13 +282,21 @@ int main(int argc, char *argv[])
 			pathString.clear();
 			pathString.append(optarg);
 			pathString = std::regex_replace(pathString, regex("\\*|\\?|\"|<|>|\\|"), "");
-			cout << "Output directory for saved files changed to " << optarg << endl;
+			out << "Output directory for saved files changed to " << std::regex_replace(optarg, regex("\\*|\\?|\"|<|>|\\|"), "") << "\n";
+			break;
+		}
+		case 'l':
+		{
+			logPath = optarg;
+			logPath = std::regex_replace(logPath, regex("\\*|\\?|\"|<|>|\\|"), "");
+			out.useLog(logPath);
+			out << "Log file set to " << std::regex_replace(optarg, regex("\\*|\\?|\"|<|>|\\|"), "") << "\n";
 			break;
 		}
 		case 'e':
 		{
 			excludeCondition = optarg;
-			cout << "Exclude rule: " << optarg << endl;
+			out << "Exclude rule: " << optarg << "\n";
 			break;
 		}
 		case 'f':
@@ -292,42 +304,42 @@ int main(int argc, char *argv[])
 			if (long_options[option_index].name == "f-global")
 			{
 				followCondition.global = optarg;
-				cout << "Global Follow rule: " << optarg << endl;
+				out << "Global Follow rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "f-protocol")
 			{
 				followCondition.protocol = optarg;
-				cout << "Protocol Follow rule: " << optarg << endl;
+				out << "Protocol Follow rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "f-domain")
 			{
 				followCondition.domain = optarg;
-				cout << "Domain Follow rule: " << optarg << endl;
+				out << "Domain Follow rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "f-path")
 			{
 				followCondition.path = optarg;
-				cout << "Path Follow rule: " << optarg << endl;
+				out << "Path Follow rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "f-filename")
 			{
 				followCondition.filename = optarg;
-				cout << "Filename Follow rule: " << optarg << endl;
+				out << "Filename Follow rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "f-extension")
 			{
 				followCondition.extension = optarg;
-				cout << "Extension Follow rule: " << optarg << endl;
+				out << "Extension Follow rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "f-querystring")
 			{
 				followCondition.querystring = optarg;
-				cout << "Querystring Follow rule: " << optarg << endl;
+				out << "Querystring Follow rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "f-anchor")
 			{
 				followCondition.anchor = optarg;
-				cout << "Anchor Follow rule: " << optarg << endl;
+				out << "Anchor Follow rule: " << optarg << "\n";
 			}
 			break;
 		}
@@ -336,42 +348,42 @@ int main(int argc, char *argv[])
 			if (long_options[option_index].name == "s-global")
 			{
 				saveCondition.global = optarg;
-				cout << "Global Save rule: " << optarg << endl;
+				out << "Global Save rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "s-protocol")
 			{
 				saveCondition.protocol = optarg;
-				cout << "Protocol save rule: " << optarg << endl;
+				out << "Protocol save rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "s-domain")
 			{
 				saveCondition.domain = optarg;
-				cout << "Domain Save rule: " << optarg << endl;
+				out << "Domain Save rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "s-path")
 			{
 				saveCondition.path = optarg;
-				cout << "Path Save rule: " << optarg << endl;
+				out << "Path Save rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "s-filename")
 			{
 				saveCondition.filename = optarg;
-				cout << "Filename Save rule: " << optarg << endl;
+				out << "Filename Save rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "s-extension")
 			{
 				saveCondition.extension = optarg;
-				cout << "Extension Save rule: " << optarg << endl;
+				out << "Extension Save rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "s-querystring")
 			{
 				saveCondition.querystring = optarg;
-				cout << "Querystring Save rule: " << optarg << endl;
+				out << "Querystring Save rule: " << optarg << "\n";
 			}
 			else if (long_options[option_index].name == "s-anchor")
 			{
 				saveCondition.anchor = optarg;
-				cout << "Anchor Save rule: " << optarg << endl;
+				out << "Anchor Save rule: " << optarg << "\n";
 			}
 			break;
 		}
@@ -379,17 +391,17 @@ int main(int argc, char *argv[])
 		{
 			if (!temp_option.name.empty())
 			{
-				cout << "Trying to set the " << optarg << "option without giving a parameter for " << temp_option.name  << endl;
+				out << "Trying to set the " << optarg << "option without giving a parameter for " << temp_option.name  << "\n";
 				return 0;
 			}
 			if (optcode.find(string(optarg)) == optcode.end())
 			{
-				cout << optarg << " is not a CURL option" << endl;
+				out << optarg << " is not a CURL option\n";
 				return 0;
 			}
 			if(curl_option_value(string(optarg))/1000 > 1 ) //See HTTPrequest definition in utils.cpp
 			{
-				cout << "Unsupported custom CURL option " << optarg << ", please contact the developer at battistonelia@erap.space about this issue" << endl;
+				out << "Unsupported custom CURL option " << optarg << ", please contact the developer at battistonelia@erap.space about this issue\n";
 				return 0;
 			}
 				
@@ -401,20 +413,20 @@ int main(int argc, char *argv[])
 		{
 			if (temp_option.name.empty())
 			{
-				cout << "No option name specified before '" << optarg << "'" << endl;
+				out << "No option name specified before '" << optarg << "'\n";
 				return 0;
 			}
 
 			temp_option.parameter = optarg;
 			options.push_back(temp_option);
-			cout << "CURL option: " << temp_option.name << "='" << temp_option.parameter << "'"  << endl;
+			out << "CURL option: " << temp_option.name << "='" << temp_option.parameter << "'\n";
 			temp_option.name.clear();
 			temp_option.parameter.clear();
 			break;
 		}
 		case ':':
 		{
-			cout << "Missing value for option -" << (char)optopt << endl;
+			out << "Missing value for option -" << (char)optopt << "\n";
 			return 0;
 			break;
 		}
@@ -425,20 +437,20 @@ int main(int argc, char *argv[])
 	}
 	if (optind < argc)
     {
-		cout << "Illegal non-option arguments: ";
+		out << "Illegal non-option arguments: ";
 		while (optind < argc)
-			cout << argv[optind++] << " ";
-		cout << "\n\n" << HELP_MSG << endl;
+			out << argv[optind++] << " ";
+		out << "\n\n" << HELP_MSG << "\n";
 		return 0;
     }
 
 	if (url.empty())
 	{
-		cout << "\n\n" << HELP_MSG << endl;
+		out << "\n\n" << HELP_MSG << "\n";
 		return 0;
 	}
 
-	cout << endl;
+	out << "\n";
 
 	url = validate(url);
 	
@@ -455,9 +467,9 @@ int main(int argc, char *argv[])
 	unordered_set<string> urls; //Hash table which contains the URLs found in the response
 	queue<uri> todo; //Queue containing the urls left to crawl
 
-	cout << todo.size() << " >> ";
+	out << todo.size() << " >> ";
 	special_out(url, save && base.check(saveCondition));
-	cout << " : " << base.depth << endl;
+	out << " : " << base.depth << "\n";
 
 	//Check if the starting url has to be saved
 	if (save && base.check(saveCondition))
@@ -483,7 +495,7 @@ int main(int argc, char *argv[])
 		writeToDisk(response, directory);
 	}
 
-	crawl(response, urls, todo, save, &base);
+	crawl(response, urls, todo, save, followCondition, &base);
 
 	thread *threads = new thread[thrnum];
 
@@ -497,7 +509,7 @@ int main(int argc, char *argv[])
 		threads[i].join();
 	}
 
-	cout << "\nCrawling completed\n";
+	out << "\nCrawling completed\n";
 
 	return 0;
 }

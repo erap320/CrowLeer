@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 
-using std::cout; using std::endl;
 using std::regex_match;
 
 uri uri::operator=(const uri& other)
@@ -23,13 +22,13 @@ uri uri::operator=(const uri& other)
 
 void uri::debug()
 {
-	cout << "Protocol:\t" << this->protocol << endl;
-	cout << "Domain:\t\t" << this->domain << endl;
-	cout << "Path:\t\t" << this->path << endl;
-	cout << "Filename:\t" << this->filename << endl;
-	cout << "Extension:\t" << this->extension << endl;
-	cout << "Querystring:\t" << this->querystring << endl;
-	cout << "Anchor:\t\t" << this->anchor << endl;
+	out << "Protocol:\t" << this->protocol << "\n";
+	out << "Domain:\t\t" << this->domain << "\n";
+	out << "Path:\t\t" << this->path << "\n";
+	out << "Filename:\t" << this->filename << "\n";
+	out << "Extension:\t" << this->extension << "\n";
+	out << "Querystring:\t" << this->querystring << "\n";
+	out << "Anchor:\t\t" << this->anchor << "\n";
 }
 
 uri::uri()

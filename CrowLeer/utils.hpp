@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 #include <unordered_set>
 #include <queue>
@@ -6,6 +7,7 @@
 #include <mutex>
 #include <filesystem>
 #include <map>
+#include <fstream>
 
 #include "uri.hpp"
 
@@ -34,6 +36,22 @@ void curl_options_init();
 
 CURLoption curl_option_value(string option);
 
+//Handles all console and file output
+class Output
+{
+public:
+	~Output();
+
+	void useLog(string name);
+
+	std::ofstream log;
+};
+
+Output& operator <<(Output &out, string s);
+Output& operator <<(Output &out, int i);
+
+extern Output out;
+
 //Function used by CURL to add chunks of data to the response string
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
 
@@ -50,7 +68,7 @@ bool writeToDisk(const string& str, fs::path path);
 int findhref(const string& response, int offset);
 
 //Search for hrefs in the response, verify if it was already found elsewhere and eventually push it in the todo queue
-void crawl(const string& response, unordered_set<string>& data, queue<uri>& todo, bool saveflag, uri* const parent = nullptr);
+void crawl(const string& response, unordered_set<string>& data, queue<uri>& todo, bool saveflag, rule followCondition, uri* const parent = nullptr);
 
 //Fixes initial urls to make them uri parsing compliant
 string validate(string url);
