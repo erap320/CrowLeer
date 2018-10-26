@@ -136,7 +136,10 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 		{
 			response = HTTPrequest(url);
 
-			crawl(response, urls, todo, save, excludeCondition, maxdepth, &current);
+			if (follow)
+			{
+				crawl(response, urls, todo, save, excludeCondition, maxdepth, &current);
+			}
 
 			if (download)
 			{
