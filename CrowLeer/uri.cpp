@@ -201,7 +201,7 @@ uri parse(string original, uri* const parent)
 		//Split the path in the correct parts
 		temp.path = support.path().to_string();
 		//Remove trailing slash
-		if (temp.path.back() == '/')
+		if (!temp.path.empty() && temp.path.back() == '/')
 			temp.path.pop_back();
 		//Check if there is a filename in the path
 		int lastslash = (int)temp.path.find_last_of("/");
@@ -213,7 +213,7 @@ uri parse(string original, uri* const parent)
 			temp.path.erase(lastslash);
 		}
 		//Remove starting slash if still there
-		if (temp.path.front() == '/')
+		if (!temp.path.empty() && temp.path.front() == '/')
 			temp.path.erase(0,1);
 
 		temp.querystring = support.query().to_string();

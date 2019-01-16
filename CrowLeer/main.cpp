@@ -400,7 +400,7 @@ int main(int argc, char *argv[])
 				out << optarg << " is not a CURL option\n";
 				return 0;
 			}
-			if(curl_option_value(string(optarg))/1000 > 1 ) //See HTTPrequest definition in utils.cpp
+			if(curl_option_value(string(optarg))/10000 > 1 ) //See HTTPrequest definition in utils.cpp
 			{
 				out << "Unsupported custom CURL option " << optarg << ", please contact the developer at battistonelia@erap.space about this issue\n";
 				return 0;

@@ -346,7 +346,7 @@ string HTTPrequest(string url)
 		for (auto it = options.begin(); it != options.end(); it++)
 		{
 			optnum = curl_option_value(it->name);
-			type = optnum / 1000;
+			type = optnum / 10000;
 
 			switch(type)
 			{
@@ -357,7 +357,7 @@ string HTTPrequest(string url)
 				}
 				case 1: //String
 				{
-					curl_easy_setopt(curl, optnum, it->parameter);
+					curl_easy_setopt(curl, optnum, it->parameter.c_str());
 					break;
 				}
 				default: //Unsupported
