@@ -1,4 +1,4 @@
-# ![Logo](https://github.com/ERap320/CrowLeer/raw/master/icons/githublogo.png){width:100px} CrowLeer, the fast and flexible CLI web crawler with focus on pages download
+# CrowLeer, the fast and flexible CLI web crawler with focus on pages download
 
 [![BuyMeACoffee](https://img.shields.io/badge/coffee-donate-yellow.svg?logo=buy-me-a-coffee)](https://buymeacoff.ee/erap320)
 [![Build status](https://ci.appveyor.com/api/projects/status/f0flhq9s2ujyiibu?svg=true)](https://ci.appveyor.com/project/ERap320/crowleer)
