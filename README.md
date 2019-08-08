@@ -1,4 +1,4 @@
-# CrowLeer, the fast and flexible CLI web crawler with focus on pages download
+# ![Logo](https://github.com/ERap320/CrowLeer/raw/master/icons/githublogo.png){width:100px} CrowLeer, the fast and flexible CLI web crawler with focus on pages download
 
 [![BuyMeACoffee](https://img.shields.io/badge/coffee-donate-yellow.svg?logo=buy-me-a-coffee)](https://buymeacoff.ee/erap320)
 [![Build status](https://ci.appveyor.com/api/projects/status/f0flhq9s2ujyiibu?svg=true)](https://ci.appveyor.com/project/ERap320/crowleer)
@@ -108,12 +108,6 @@ You can find a complete list of CURL options here: https://curl.haxx.se/libcurl/
 
 * [curl 7.57.0](https://curl.haxx.se/)
 * [cpp-netlib URI](https://github.com/cpp-netlib/uri)
-
-## Repositories
-This project is pushed to both GitHub and GitLab:
-
-* [GitLab Repository](https://gitlab.com/ERap320/CrowLeer)
-* [GitHub Repository](https://github.com/ERap320/CrowLeer)
 
 ## License
 
