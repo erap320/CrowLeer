@@ -75,9 +75,10 @@ Example: the URL \"https://en.wikipedia.org/wiki/Dog?s=canis#Origin\" will be sp
 
 using std::cin;
 using std::thread;
+using std::mutex;
 
 //Number of threads used for crawling initialized with its default value
-int thrnum = 10;
+unsigned int thrnum = 10;
 
 //Variables to initialize
 string url;
@@ -96,17 +97,21 @@ string logPath;
 //Option struct used to store curl options until pushed
 curl_option temp_option;
 
-void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
+//Lock to access the threads' activity flags
+mutex flagsMutex;
+
+void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base, bool* isActive, unsigned int thrId)
 {
 	string url;
 	string response;
 	uri current;
 	bool oktoread = true;
+	bool workEnded = false;
 	bool follow;
 	bool download;
 	fs::path directory;
 
-	while (oktoread)
+	while (!workEnded)
 	{
 		follow = false;
 		download = false;
@@ -128,6 +133,10 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 					consoleMutex.unlock();
 				}
 				todo.pop();
+
+				flagsMutex.lock();
+					isActive[thrId] = true;
+				flagsMutex.unlock();
 			}
 		queueMutex.unlock();
 
@@ -174,12 +183,31 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base)
 				}
 			}
 		}
+
+		//We can close the thread only if work is completely done (no other thread is processing in addition to an empty queue)
+		flagsMutex.lock();
+		{
+			isActive[thrId] = false;
+
+			if (oktoread)
+			{
+				workEnded = false;
+			}
+			else
+			{
+				workEnded = true;
+
+				for (unsigned int i = 0; i < thrnum && workEnded; i++)
+					workEnded = !isActive[i];
+			}
+		}
+		flagsMutex.unlock();
 	}
 }
 
 int main(int argc, char *argv[])
 {
-	out << "CrowLeer 1.6 by ERap320 [battistonelia@erap.space]\n\n";
+	out << "CrowLeer 1.8 by ERap320 [battistonelia@erap.space]\n\n";
 
 	//Used to initialize custom curl options map
 	curl_options_init();
@@ -498,17 +526,20 @@ int main(int argc, char *argv[])
 
 	crawl(response, urls, todo, save, excludeCondition, maxdepth, &base);
 
-	thread *threads = new thread[thrnum];
+	thread* threads = new thread[thrnum];
+	bool* isActive = new bool[thrnum](); //Initialized to zero (false)
 
-	for (int i = 0; i < thrnum; i++)
+	for (unsigned int i = 0; i < thrnum; i++)
 	{
-		threads[i] = std::thread(doWork, std::ref(urls), std::ref(todo), base);
+		threads[i] = std::thread(doWork, std::ref(urls), std::ref(todo), base, isActive, i);
 	}
 
-	for (int i = 0; i < thrnum; i++)
+	for (unsigned int i = 0; i < thrnum; i++)
 	{
 		threads[i].join();
 	}
+	
+	delete isActive;
 
 	out << "\nCrawling completed\n";
 
