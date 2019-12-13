@@ -14,71 +14,76 @@ For more information visit https://github.com/ERap320/CrowLeer\n\n\
 >>USAGE: crowleer [options]\n\
 \n\
 >>OPTIONS:\n\
-  -h --help\t\tView this help page\n\
-  -u --url\t\tURL used to start crawling\n\
-  -t --thread\t\tNumber of threads used\n\
-  -d --depth\t\tMaximum crawling depth (the starting URL spcified in -u is at depth 0)\n\
-  -x --same-domain\tQuick flag to only follow URLs with the same domain as the starting URL, overrides the --f-domain option\n\
-  -S --save\t\tActivates the download functionality of CrowLeer. If not used nothing will be saved on the disk\n\
-  -o --output\t\tChoose a directory where the selected files will be saved. The default value is the current directory\n\
-  -l --log\t\tOutputs progress details to the specified log file. Works best if it's the first specified option, as it makes possible to log further settings of the current job\n\
-  -c --curl-opt\t\tName of the custom CURL option to use when downloading pages. Only to use before the -p flag that specifies the parameter for the option. Can be used multiple times to set more than one option\n\
-  -p --curl-param\tValue of the custom CURL option specified before it with the -c flag\n\
-  --f-global\t\tFollow rule to be tested on the whole parsed URL\t\t\n\
-  --f-protocol\t\tFollow rules on single parts of parsed URLs\n\
-  --f-domain\n\
-  --f-path\n\
-  --f-filename\n\
-  --f-extension\n\
-  --f-querystring\t\n\
-  --f-anchor\n\
-  --s-global\t\tSave rule to be tested on the whole parsed URL\t\t\n\
-  --s-protocol\t\tSave rules on single parts of parsed URLs\n\
-  --s-domain\n\
-  --s-path\n\
-  --s-filename\n\
-  --s-extension\n\
-  --s-querystring\n\
-  --s-anchor\n\
+\t-h --help\t\tView this help page\n\
+\t-u --url\t\tURL used to start crawling\n\
+\t-t --thread\t\tNumber of threads used\n\
+\t-d --depth\t\tMaximum crawling depth (the starting URL spcified in -u is at depth 0)\n\
+\t-x --same-domain\tQuick flag to only follow URLs with the same domain as the starting URL,\n\t\t\t\toverrides the --f-domain option\n\
+\t-S --save\t\tActivates the download functionality of CrowLeer. If not used nothing\n\t\t\t\twill be saved on the disk\n\
+\t-o --output\t\tChoose a directory where the selected files will be saved. The default\n\t\t\t\tvalue is the current directory\n\
+\t-l --log\t\tOutputs progress details to the specified log file. Works best if it's\n\t\t\t\tthe first specified option, as it makes possible to log further settings\n\t\t\t\tof the current job\n\
+\t-e --exclude\t\tRule tested on the whole parsed URL, excludes the URL from the crawling\n\t\t\t\tand saving steps if matched\n\
+\t-c --curl-opt\t\tName of the custom CURL option to use when downloading pages. Only to\n\t\t\t\tuse before the -p flag that specifies the parameter for the option.\n\t\t\t\tCan be used multiple times to set more than one option\n\
+\t-p --curl-param\t\tValue of the custom CURL option specified before it with the -c flag\n\
+\t-r --relative\t\tMake every URL in downloaded pages relative, so that you can seamlessly\n\t\t\t\tbrowse from the downloaded copy (Only works with -S)\n\
+\t\n\
+\t--f-global\t\tFollow rule to be tested on the whole parsed URL\t\t\n\
+\t--f-protocol\t\tFollow rules on single parts of parsed URLs\n\
+\t--f-domain\n\
+\t--f-path\n\
+\t--f-filename\n\
+\t--f-extension\n\
+\t--f-querystring\t\n\
+\t--f-anchor\n\
+\t\n\
+\t--s-global\t\tSave rule to be tested on the whole parsed URL\t\t\n\
+\t--s-protocol\t\tSave rules on single parts of parsed URLs\n\
+\t--s-domain\n\
+\t--s-path\n\
+\t--s-filename\n\
+\t--s-extension\n\
+\t--s-querystring\n\
+\t--s-anchor\n\
 \n\
 >>RULES:\n\
-CrowLeer uses Regular Expressions (https://en.wikipedia.org/wiki/Regular_expression) to apply conditions to URLs or parts of URLs.\n\
-Both rules have a global component, that matches the Completed URL (see the URL section) and one for every URL part.\n\
+CrowLeer uses Regular Expressions (https://en.wikipedia.org/wiki/Regular_expression) to apply\nconditions to URLs or parts of URLs.\n\
+Both rules have a global component, that matches the Completed URL (see the URL section) and one\nfor every URL part.\n\
 There are two rules: Follow Rule and Save Rule.\n\
   - Follow Rule: describes pages to follow while crawling\n\
   - Save Rule: describes pages to download and save locally\n\
-If not specified every rule is set to match everything. You can set every possible composition of rules to describe the exact scenario you need, including global rule and parts rules together.\n\
+\n\
+If not specified every rule is set to match everything. You can set every possible composition\nof rules to describe the exact scenario you need, including global rule and parts rules together.\n\
 \n\
 >>URLs:\n\
 CrowLeer completes the URLs found in the crawled pages to make its and your work easier.\n\
-Every URL is split in parts and completed with parts from the URL of the page it was found in if necessary.\n\
-The parts in which a URL is split are: protocol, domain, path, filename, extension, querystring and anchor.\n\
+Every URL is split in parts and completed with parts from the URL of the page it was found in\nif necessary.\n\
+The parts in which a URL is split are: protocol, domain, path, filename, extension, querystring\nand anchor.\n\
 \n\
 Example: the URL \"/example/one/file.txt\" was found while running on \"https://erap.space\"\n\
-  The Completed URL will be \"https://erap.space/example/one/file.txt\", and its parts will be:\n\
-  - protocol: \"https\"\n\
-  - domain: \"erap.space\"\n\
-  - path: \"example/one\"\n\
-  - filename: \"file\"\n\
-  - extension: \"txt\"\n\
-  - querystring: \"\"\n\
-  - anchor: \"\"\n\
+\tThe Completed URL will be \"https://erap.space/example/one/file.txt\", and its parts will be:\n\
+\t- protocol: \"https\"\n\
+\t- domain: \"erap.space\"\n\
+\t- path: \"example/one\"\n\
+\t- filename: \"file\"\n\
+\t- extension: \"txt\"\n\
+\t- querystring: \"\"\n\
+\t- anchor: \"\"\n\
 \n\
 Example: the URL \"https://en.wikipedia.org/wiki/Dog?s=canis#Origin\" will be split in parts this way:\n\
-  - protocol: \"https\"\n\
-  - domain: \"en.wikipedia.org\"\n\
-  - path: \"wiki/Dog\"\n\
-  - filename: \"\"\n\
-  - extension: \"\"\n\
-  - querystring: \"s=canis\"\n\
-  - anchor: \"Origin\""
+\t- protocol: \"https\"\n\
+\t- domain: \"en.wikipedia.org\"\n\
+\t- path: \"wiki/Dog\"\n\
+\t- filename: \"\"\n\
+\t- extension: \"\"\n\
+\t- querystring: \"s=canis\"\n\
+\t- anchor: \"Origin\""
 
 using std::cin;
 using std::thread;
 using std::mutex;
 
-//Number of threads used for crawling initialized with its default value
-unsigned int thrnum = 10;
+//Number of threads used for crawling, will be initialized with -t flag or after reading the flags
+unsigned int thrNum = 0;
 
 //Variables to initialize
 string url;
@@ -87,6 +92,7 @@ rule followCondition; //conditions to choose what to crawl
 rule saveCondition; //condition to choose what to download
 regex excludeCondition; //condition to exclude certain URLs, like a negative global follow condition
 bool save = false; //flag to activate the saving of files, changed with the -S option
+bool relativize = false; //flag to activate url relativization
 
 //String of the path where to save files
 string pathString;
@@ -124,7 +130,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base, bool* isAct
 				if (current.check(followCondition)) //Other rules are checked before inserting in the todo queue
 				{
 					follow = true;
-					url = current.tostring();
+					url = current.toString();
 					download = save && current.check(saveCondition);
 					consoleMutex.lock();
 						out << todo.size() << " >> ";
@@ -145,42 +151,19 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base, bool* isAct
 		{
 			response = HTTPrequest(url);
 
-			if (follow)
+			if (follow && (maxdepth == -1 || current.depth < maxdepth))
 			{
 				crawl(response, urls, todo, save, excludeCondition, maxdepth, &current);
 			}
 
 			if (download)
 			{
-				directory = pathString;
-				directory /= std::regex_replace(current.domain, regex(":|\\*|\\?|\"|<|>|\\|"), "");
-				directory /= std::regex_replace(current.path, regex(":|\\*|\\?|\"|<|>|\\|"), "");
+				directory = computePath(current, pathString);
+				
+				if (relativize)
+					relativizeUrls(&response, current, followCondition, saveCondition, maxdepth);
 
-				if (!fs::exists(directory))
-				{
-					try {
-						fs::create_directories(directory);
-
-						if (current.filename.empty())
-							directory /= "index.html";
-						else
-							directory /= current.filename + "." + current.extension;
-
-						writeToDisk(response, directory);
-					}
-					catch (fs::filesystem_error e) {
-						error_out( (string)e.what() + " : Could not create folder for URL " + url);
-					}
-				}
-				else
-				{
-					if (current.filename.empty())
-						directory /= "index.html";
-					else
-						directory /= current.filename + "." + current.extension;
-
-					writeToDisk(response, directory);
-				}
+				writeToDisk(response, directory);
 			}
 		}
 
@@ -197,7 +180,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base, bool* isAct
 			{
 				workEnded = true;
 
-				for (unsigned int i = 0; i < thrnum && workEnded; i++)
+				for (unsigned int i = 0; i < thrNum && workEnded; i++)
 					workEnded = !isActive[i];
 			}
 		}
@@ -207,7 +190,7 @@ void doWork(unordered_set<string>& urls, queue<uri>& todo, uri base, bool* isAct
 
 int main(int argc, char *argv[])
 {
-	out << "CrowLeer 1.8 by ERap320 [battistonelia@erap.space]\n\n";
+	out << "CrowLeer 2.0 by ERap320 [battistonelia@erap.space]\n\n";
 
 	//Used to initialize custom curl options map
 	curl_options_init();
@@ -237,6 +220,7 @@ int main(int argc, char *argv[])
 		{ "output",			required_argument,	0,	'o' },
 		{ "log",			required_argument,	0,	'l' },
 		{ "exclude",		required_argument,	0,	'e' },
+		{ "replace",		required_argument,	0,	'r' },
 		{ "f-global",		required_argument,	0,	'f' },
 		{ "f-protocol",		required_argument,	0,	'f' },
 		{ "f-domain",		required_argument,	0,	'f' },
@@ -262,7 +246,7 @@ int main(int argc, char *argv[])
 	{
 		int option_index = 0;
 
-		opt = getopt_long(argc, argv, "hu:xSo:l:e:t:d:f:s:c:p:", long_options, &option_index);
+		opt = getopt_long(argc, argv, "hu:xSo:l:e:rt:d:f:s:c:p:", long_options, &option_index);
 
 		/* Detect the end of the options. */
 		if (opt == -1)
@@ -285,7 +269,7 @@ int main(int argc, char *argv[])
 		case 't':
 		{
 			out << "Threads number: " << optarg << "\n";
-			thrnum = atoi(optarg);
+			thrNum = atoi(optarg);
 			break;
 		}
 		case 'd':
@@ -326,6 +310,12 @@ int main(int argc, char *argv[])
 		{
 			excludeCondition = optarg;
 			out << "Exclude rule: " << optarg << "\n";
+			break;
+		}
+		case 'r':
+		{
+			relativize = true;
+			out << "Relative URLs rule applied\n";
 			break;
 		}
 		case 'f':
@@ -479,6 +469,12 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
+	if (thrNum == 0)
+	{
+		thrNum = std::thread::hardware_concurrency();
+		out << "Threads number: " << thrNum << "\n";
+	}
+
 	out << "\n";
 
 	url = validate(url);
@@ -499,6 +495,8 @@ int main(int argc, char *argv[])
 	out << todo.size() << " >> ";
 	special_out(url, save && base.check(saveCondition));
 	out << " : " << base.depth << "\n";
+
+	crawl(response, urls, todo, save, excludeCondition, maxdepth, &base);
 
 	//Check if the starting url has to be saved
 	if (save && base.check(saveCondition))
@@ -521,20 +519,22 @@ int main(int argc, char *argv[])
 			directory /= "index.html";
 		else
 			directory /= base.filename + "." + base.extension;
+
+		if (relativize)
+			relativizeUrls(&response, base, followCondition, saveCondition, maxdepth);
+
 		writeToDisk(response, directory);
 	}
 
-	crawl(response, urls, todo, save, excludeCondition, maxdepth, &base);
+	thread* threads = new thread[thrNum];
+	bool* isActive = new bool[thrNum](); //Initialized to zero (false)
 
-	thread* threads = new thread[thrnum];
-	bool* isActive = new bool[thrnum](); //Initialized to zero (false)
-
-	for (unsigned int i = 0; i < thrnum; i++)
+	for (unsigned int i = 0; i < thrNum; i++)
 	{
 		threads[i] = std::thread(doWork, std::ref(urls), std::ref(todo), base, isActive, i);
 	}
 
-	for (unsigned int i = 0; i < thrnum; i++)
+	for (unsigned int i = 0; i < thrNum; i++)
 	{
 		threads[i].join();
 	}

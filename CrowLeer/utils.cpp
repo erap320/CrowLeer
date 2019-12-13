@@ -406,18 +406,18 @@ bool writeToDisk(const string& str, fs::path path)
 	return true;
 }
 
-int findhref(const string& response, int offset)
+size_t findURL(const string& response, size_t offset, string attr)
 {
 	size_t pos; //Holds the position of the string searched for in the response
+	size_t i;
 
-	int i;
-	pos = response.find("href", offset); //Find the string "href"
+	pos = response.find(attr, offset); //Find the string "href"
 
-	while (pos < response.length())
+	while (pos != string::npos && pos < response.length())
 	{
 		if (pos == string::npos) //If the string is not in the response
-			return (int)pos;
-		for (i = (int)(pos + 4); response[i] == ' '; i++) //Point to the first non-space char
+			return pos;
+		for (i = (pos + attr.size()); response[i] == ' '; i++) //Point to the first non-space char
 			;
 		//Check if the href is followed by =' or ="
 		if (response[i] == '=')
@@ -425,12 +425,12 @@ int findhref(const string& response, int offset)
 			for (i++; response[i] == ' '; i++)
 				;
 			if (response[i] == '\'' || response[i] == '"')
-				return (int)pos;
+				return pos;
 		}
-		pos = response.find("href", i); //Look for the next href
+		pos = response.find(attr, i); //Look for the next attribute
 	}
 
-	return -1;
+	return string::npos;
 }
 
 
@@ -441,33 +441,67 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 	string extracted;
 	uri temp;
 
-	//Find every href in the page and add the URL to the urls vector
-	pos = findhref(response, 0);
-	while (pos < response.length() && pos != string::npos)
+	//Find every attribute in the page and add the URL to the urls vector
+	for (unsigned int i = 0; i < URLattributesNum; i++)
 	{
-		before = response.find_first_of("\"'", pos + 4);
-		after = response.find(response[before], before + 1);
-		extracted = response.substr(before + 1, after - before - 1);
-
-		queueMutex.lock();
+		pos = findURL(response, 0, URLattributes[i]);
+		while (pos != string::npos && pos < response.length())
+		{
+			before = response.find_first_of("\"'", pos + URLattributes[i].length());
+			after = response.find(response[before], before + 1);
+			extracted = response.substr(before + 1, after - before - 1);
 			temp = parse(extracted, parent);
+
+			queueMutex.lock();
 			//Add only if never found before
-			auto search = urls.find(temp.tostring());
+			auto search = urls.find(temp.toString());
 			if (search == urls.end())
 			{
-				urls.insert(temp.tostring());
+				urls.insert(temp.toString());
 
-				if (!std::regex_match(temp.tostring(), excludeCondition) && (maxdepth == -1 ? true : (temp.depth <= maxdepth)) )
+				if (!std::regex_match(temp.toString(), excludeCondition))
 				{
 					todo.push(temp);
 				}
-
 			}
-		queueMutex.unlock();
+			queueMutex.unlock();
 
-		pos = findhref(response, (int)(after + 1));
+			pos = findURL(response, after + 1, URLattributes[i]);
+		}
 	}
 }
+
+void relativizeUrls(string* page, uri& const current, rule& const followCondition, rule& const saveCondition, int maxdepth)
+{
+	//Make the link relative only if the page will be downloaded according to rules
+	//Otherwise make the link absolute to let the user open the right resource downloaded from the live website
+	
+	size_t pos; //Holds the position of the string searched for in the response
+	size_t before, after; //Hold the position of opening and closing quote of the href property
+	string extracted;
+	uri temp;
+
+	//Find every href in the page and relativize it
+	for (unsigned int i = 0; i < URLattributesNum; i++)
+	{
+		pos = findURL(*page, 0, URLattributes[i]);
+		while (pos < page->length() && pos != string::npos)
+		{
+			before = page->find_first_of("\"'", pos + URLattributes[i].length());
+			after = page->find((*page)[before], before + 1);
+			extracted = page->substr(before + 1, after - before - 1);
+			temp = parse(extracted, &current, false);
+
+			if(current.depth < maxdepth && temp.check(saveCondition))
+				page->replace(before + 1, extracted.size(), relative(temp, current));
+			else
+				page->replace(before + 1, extracted.size(), temp.toString());
+
+			pos = findURL(*page, after + 1, URLattributes[i]);
+		}
+	}
+}
+
 string validate(string url)
 {
 	url = trim(url);
@@ -476,6 +510,45 @@ string validate(string url)
 	if (pos == string::npos)
 		url = "http://" + url;
 	return url;
+}
+
+fs::path computePath(uri& const link, string basePath)
+{
+	fs::path result = basePath;
+	result /= std::regex_replace(link.domain, regex(":|\\*|\\?|\"|<|>|\\|"), "");
+	result /= std::regex_replace(link.path, regex(":|\\*|\\?|\"|<|>|\\|"), "");
+
+	if (!fs::exists(result))
+	{
+		try {
+			fs::create_directories(result);
+		}
+		catch (fs::filesystem_error e) {
+			error_out((string)e.what() + " : Could not create folder for URL " + link.toString());
+		}
+	}
+
+	string filename = "index";
+
+	if (!link.filename.empty())
+		filename = link.filename;
+
+	if (!link.extension.empty())
+		filename += "." + link.extension;
+	else
+		filename += ".html";
+
+	if (!link.querystring.empty())
+		filename += "_" + link.querystring;
+
+	if (!link.anchor.empty())
+		filename += "#" + link.anchor;
+
+	filename = std::regex_replace(filename, regex(":|\\*|\\?|\"|<|>|\\|"), "");
+
+	result /= filename;
+
+	return result;
 }
 
 void error_out(string s)

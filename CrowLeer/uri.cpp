@@ -42,7 +42,7 @@ uri::uri(string str)
 	this->depth = 0;
 }
 
-string uri::tostring()
+string uri::toString()
 {
 	string temp;
 
@@ -52,7 +52,10 @@ string uri::tostring()
 		temp += "://";
 	}
 
-	temp += this->domain;
+	if (!this->domain.empty())
+	{
+		temp += this->domain;
+	}
 
 	if (!this->path.empty())
 	{
@@ -63,7 +66,9 @@ string uri::tostring()
 	if (!this->filename.empty())
 	{
 		temp += "/";
-		temp += this->filename + "." + this->extension;
+		temp += this->filename;
+		if (!this->extension.empty())
+			temp += "." + this->extension;
 	}
 
 	if (!this->querystring.empty())
@@ -92,7 +97,7 @@ string trim(string str)
 	return str;
 }
 
-uri parse(string original, uri* const parent)
+uri parse(string original, uri* const parent, bool errOut)
 {
 	string str;
 	string completion;
@@ -152,7 +157,7 @@ uri parse(string original, uri* const parent)
 			{
 				completion += parent->domain + "/";
 
-				if (relative[0] == '.' || relative == "/")
+				if (relative[0] == '.')
 				{
 					if (!parent->path.empty())
 					{
@@ -186,7 +191,8 @@ uri parse(string original, uri* const parent)
 		}
 		else
 		{
-			error_out(">> Missing needed parent URL for " + original);
+			if(errOut)
+				error_out(">> Missing needed parent URL for " + original);
 		}
 	}
 
@@ -222,7 +228,8 @@ uri parse(string original, uri* const parent)
 	//The original URL can't be parsed
 	catch (network::uri_syntax_error e)
 	{
-		error_out(">> Parsing error on " + original + "\n   Found in " + parent->tostring() + " : " + (string)e.what() );
+		if (errOut)
+			error_out(">> Parsing error on " + original + "\n   Found in " + parent->toString() + " : " + (string)e.what() );
 	}
 
 	return temp;
@@ -238,11 +245,46 @@ bool uri::check(rule r) {
 	result = result && regex_match(this->querystring, r.querystring);
 	result = result && regex_match(this->anchor, r.anchor);
 	
-	result = result && regex_match(this->tostring(), r.global);
+	result = result && regex_match(this->toString(), r.global);
 
 	return result;
 }
 
 bool uri::check(regex r) {
-	return regex_match(this->tostring(), r);
+	return regex_match(this->toString(), r);
+}
+
+string relative(uri absolute, uri& const base)
+{
+	//If the URL points to a directory, point to its index.html instead
+	if (absolute.filename.empty())
+	{
+		absolute.filename = "index";
+		absolute.extension = "html";
+	}
+
+	string a = absolute.toString();
+
+	string b = base.toString();
+	if (base.filename.empty()) b += '/';
+
+	size_t minLen = min(a.length(), b.length());
+	size_t i;
+
+	//Remove the part in common
+	for (i = 0; a[i] == b[i] && i < minLen; i++)
+		;
+
+	a = a.erase(0, i);
+	b = b.erase(0, i);
+		
+	size_t parentCounter = std::count(b.begin(), b.end(), '/');
+
+	for (i = 0; i < parentCounter; i++)
+		a = "../" + a;
+
+	a = std::regex_replace(a, regex("\\?"), "_");
+	a = std::regex_replace(a, regex(":|\\*|\\?|\"|<|>|\\|"), "");
+
+	return a;
 }

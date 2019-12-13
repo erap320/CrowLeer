@@ -27,7 +27,7 @@ public:
 	uri(string str);
 
 	//Return the uri in a string format made by putting together its components
-	string tostring();
+	string toString();
 
 	//Check if the uri respects the rules defined by regex
 	bool check(rule r); //With a rule type on each component
@@ -38,4 +38,7 @@ public:
 string trim(string str);
 
 //Divide a string representing a URI in its components for easier management, and make it absolute using a parent uri
-uri parse(string str, uri* const parent = nullptr);
+uri parse(string str, uri* const parent = nullptr, bool errOut = true);
+
+//Makes an uri relative by removing its protocol and domain
+string relative(uri absolute, uri& base);

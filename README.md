@@ -24,6 +24,7 @@
 | -e --exclude                                                                            | Rule tested on the whole parsed URL, excludes the URL from the crawling and saving steps if matched                                                                                                 |
 | -c --curl-opt                                                                           | Name of the custom CURL option to use when downloading pages. Only to use before the -p flag that specifies the parameter for the option. Can be used multiple times to set more than one option |
 | -p --curl-param                                                                         | Value of the custom CURL option specified before it with the -c flag                                                                                                                                |
+| -r --relative                                                                           | Make every URL in downloaded pages relative, so that you can seamlessly browse from the downloaded copy (Only works with -S)                                                                        |
 | --f-global                                                                              | Follow rule to be tested on the whole parsed URL                                                                                                                                                    |
 | --f-protocol --f-domain --f-path --f--filename --f-extension --f-querystring --f-anchor | Follow rules on single parts of parsed URLs                                                                                                                                                         |
 | --s-global                                                                              | Save rule to be tested on the whole parsed URL                                                                                                                                                      |
@@ -103,6 +104,11 @@ It's possible to set how many options you want, by repeating -c and -p arguments
 Keep in mind that these options will be set for every request made by the program.
 
 You can find a complete list of CURL options here: https://curl.haxx.se/libcurl/c/curl_easy_setopt.html
+
+### Browsing downloaded pages
+If you are saving pages with the ```-S``` flag with the intent of browsing them offline, as a local copy of the crawled website, absolute links in them can make it very difficult.
+
+You can easily solve the problem by adding the ```-r``` flag. It activates Crowleer's "URL relativization" feature, making links point to other local pages instead of real ones.
 
 ### Third party libraries
 

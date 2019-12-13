@@ -64,15 +64,25 @@ void debug_out(const unordered_set<string>& data);
 //Save string in file
 bool writeToDisk(const string& str, fs::path path);
 
-//Finds the position of the next valid "href" string, that leads to a real URL
-int findhref(const string& response, int offset);
+//List of html attributes where URLs to follow are usually found
+const string URLattributes[] = { "href", "src" };
+const int URLattributesNum = 2;
+
+//Finds the position of the next valid attribute that leads to a real URL
+size_t findURL(const string& response, size_t offset, string attr);
 
 //Search for hrefs in the response, verify if it was already found elsewhere and eventually push it in the todo queue
 //Excluded or too deep urls aren't pushed to the queue
 void crawl(const string& response, unordered_set<string>& data, queue<uri>& todo, bool saveflag, std::regex excludeCondition, int maxdepth, uri* const parent = nullptr);
 
+//Search for uris in the page and make them all relative
+void relativizeUrls(string* page, uri& const parent, rule& const followCondition, rule& const saveCondition, int maxdepth);
+
 //Fixes initial urls to make them uri parsing compliant
 string validate(string url);
+
+//Compute the path where the file will be saved
+fs::path computePath(uri& url, string basePath);
 
 //Outputs error text to console
 void error_out(string s);
