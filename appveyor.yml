@@ -14,6 +14,6 @@ artifacts:
 deploy:
 - provider: GitHub
   auth_token:
-    secure: QHmCKIXtgFHu2UTzPJskGlDPGTRNUbUCThhBJ4blC159Ks0meb6qyR/fE7ssqQ1q
+    secure: OxBuIwz5r2j+aNlQHcm3JUnT4Jo+/FzQ5FO5yFyLYXkPlvTAjC1C+mz4IZ6wCpuR
   artifact: CrowLeer_Win64.exe
   draft: true
