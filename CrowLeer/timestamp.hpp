@@ -1,4 +1,6 @@
-#pragma once
+#ifndef TIMESTAMP_HPP
+#define TIMESTAMP_HPP
+
 #include <ctime>
 #include <string>
 
@@ -30,3 +32,5 @@ string date()
 	std::strftime(str, sizeof(str), "%d/%m/%y", std::localtime(&now));
 	return string(str);
 }
+
+#endif

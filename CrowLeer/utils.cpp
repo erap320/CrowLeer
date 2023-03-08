@@ -471,7 +471,7 @@ void crawl(const string& response, unordered_set<string>& urls, queue<uri>& todo
 	}
 }
 
-void relativizeUrls(string* page, uri& const current, rule& const followCondition, rule& const saveCondition, int maxdepth)
+void relativizeUrls(string* page, const uri& current, const rule& followCondition, const rule& saveCondition, int maxdepth)
 {
 	//Make the link relative only if the page will be downloaded according to rules
 	//Otherwise make the link absolute to let the user open the right resource downloaded from the live website
@@ -512,7 +512,7 @@ string validate(string url)
 	return url;
 }
 
-fs::path computePath(uri& const link, string basePath)
+fs::path computePath(const uri& link, string basePath)
 {
 	fs::path result = basePath;
 	result /= std::regex_replace(link.domain, regex(":|\\*|\\?|\"|<|>|\\|"), "");

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UTILS_HPP
+#define UTILS_HPP
 
 #include <string>
 #include <unordered_set>
@@ -11,10 +12,15 @@
 
 #include "uri.hpp"
 
+#ifdef WINDOWS
 #define CURL_STATICLIB
 #include "curl.h"
+#endif
+#ifdef LINUX
+#include <curl/curl.h>
+#endif
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 using std::string;
 using std::unordered_set;
@@ -76,13 +82,13 @@ size_t findURL(const string& response, size_t offset, string attr);
 void crawl(const string& response, unordered_set<string>& data, queue<uri>& todo, bool saveflag, std::regex excludeCondition, int maxdepth, uri* const parent = nullptr);
 
 //Search for uris in the page and make them all relative
-void relativizeUrls(string* page, uri& const parent, rule& const followCondition, rule& const saveCondition, int maxdepth);
+void relativizeUrls(string* page, const uri& parent, const rule& followCondition, const rule& saveCondition, int maxdepth);
 
 //Fixes initial urls to make them uri parsing compliant
 string validate(string url);
 
 //Compute the path where the file will be saved
-fs::path computePath(uri& url, string basePath);
+fs::path computePath(const uri& url, string basePath);
 
 //Outputs error text to console
 void error_out(string s);
@@ -90,3 +96,5 @@ void error_out(string s);
 //Outputs text with a special color if the flag is raised
 //Only to be used inside a mutex block!
 void special_out(string s, bool color);
+
+#endif

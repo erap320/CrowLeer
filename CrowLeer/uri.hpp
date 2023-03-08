@@ -1,8 +1,9 @@
-#pragma once
+#ifndef URI_HPP
+#define URI_HPP
 
 #include "conditions.hpp"
 #include <string>
-#include <network\uri.hpp>
+#include "network/uri.hpp"
 
 using std::string;
 
@@ -27,7 +28,7 @@ public:
 	uri(string str);
 
 	//Return the uri in a string format made by putting together its components
-	string toString();
+	string toString() const;
 
 	//Check if the uri respects the rules defined by regex
 	bool check(rule r); //With a rule type on each component
@@ -38,7 +39,9 @@ public:
 string trim(string str);
 
 //Divide a string representing a URI in its components for easier management, and make it absolute using a parent uri
-uri parse(string str, uri* const parent = nullptr, bool errOut = true);
+uri parse(string str, const uri* parent = nullptr, bool errOut = true);
 
 //Makes an uri relative by removing its protocol and domain
-string relative(uri absolute, uri& base);
+string relative(uri absolute, const uri& base);
+
+#endif

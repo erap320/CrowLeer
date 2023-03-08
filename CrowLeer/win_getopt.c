@@ -49,10 +49,12 @@
 * POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifdef WINDOWS
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#include "getopt.h"
+#include "win_getopt.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <windows.h>
@@ -566,3 +568,5 @@ getopt_long_only(int nargc, char * const *nargv, const char *options,
 	return (getopt_internal(nargc, nargv, options, long_options, idx,
 		FLAG_PERMUTE | FLAG_LONGONLY));
 }
+
+#endif

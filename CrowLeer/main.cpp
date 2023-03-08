@@ -6,7 +6,12 @@
 //Other project headers
 #include "uri.hpp"
 #include "utils.hpp"
-#include "getopt.h"
+#ifdef LINUX
+#include <getopt.h>
+#endif
+#ifdef WINDOWS
+#include "win_getopt.h"
+#endif
 
 #define HELP_MSG "\
 Fast and reliable CLI web crawler with focus on pages download\n\

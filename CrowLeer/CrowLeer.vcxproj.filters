@@ -24,10 +24,10 @@
     <ClCompile Include="conditions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="getopt.c">
+    <ClCompile Include="uri.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="uri.cpp">
+    <ClCompile Include="win_getopt.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -36,9 +36,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="conditions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="getopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.hpp">
@@ -51,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="timestamp.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="win_getopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

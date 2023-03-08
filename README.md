@@ -112,8 +112,21 @@ You can easily solve the problem by adding the ```-r``` flag. It activates Crowl
 
 ### Third party libraries
 
-* [curl 7.57.0](https://curl.haxx.se/)
+* [curl](https://curl.haxx.se/)
 * [cpp-netlib URI](https://github.com/cpp-netlib/uri)
+
+## Building
+### Windows
+Open `CrowLeer.sln` with Visual Studio 2019 or later, and follow the usual build process.
+
+### Linux
+Install curl dependencies with your package manager. Here you can find a couple of examples:
+
+- Debian based distros: `sudo apt-get install libcurl-dev`
+- Arch based distros: `sudo pacman -S curl`
+
+Then, build the executable by running `make` in the root of this repository.
+The resulting executable will be available at `build/crowleer`.
 
 ## License
 

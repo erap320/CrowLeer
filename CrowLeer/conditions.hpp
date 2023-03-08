@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CONDITIONS_HPP
+#define CONDITIONS_HPP
+
 #include <regex>
 
 using std::regex;
@@ -19,3 +21,5 @@ public:
 
 	rule();
 };
+
+#endif

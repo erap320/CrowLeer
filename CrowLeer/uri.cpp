@@ -4,8 +4,10 @@
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 using std::regex_match;
+using std::min;
 
 uri uri::operator=(const uri& other)
 {
@@ -42,7 +44,7 @@ uri::uri(string str)
 	this->depth = 0;
 }
 
-string uri::toString()
+string uri::toString() const
 {
 	string temp;
 
@@ -97,7 +99,7 @@ string trim(string str)
 	return str;
 }
 
-uri parse(string original, uri* const parent, bool errOut)
+uri parse(string original, const uri* parent, bool errOut)
 {
 	string str;
 	string completion;
@@ -254,7 +256,7 @@ bool uri::check(regex r) {
 	return regex_match(this->toString(), r);
 }
 
-string relative(uri absolute, uri& const base)
+string relative(uri absolute, const uri& base)
 {
 	//If the URL points to a directory, point to its index.html instead
 	if (absolute.filename.empty())

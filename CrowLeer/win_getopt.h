@@ -1,3 +1,4 @@
+#ifdef WINDOWS
 #ifndef __GETOPT_H__
 /**
 * DISCLAIMER
@@ -93,3 +94,5 @@ extern "C" {
 #endif
 
 #endif /* !defined(__UNISTD_H_SOURCED__) && !defined(__GETOPT_LONG_H__) */
+
+#endif
