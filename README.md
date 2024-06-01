@@ -3,7 +3,7 @@
 [![BuyMeACoffee](https://img.shields.io/badge/coffee-donate-yellow.svg?logo=buy-me-a-coffee)](https://buymeacoff.ee/erap320)
 [![Build status](https://ci.appveyor.com/api/projects/status/f0flhq9s2ujyiibu?svg=true)](https://ci.appveyor.com/project/ERap320/crowleer)
 [![License](https://img.shields.io/github/license/ERap320/CrowLeer.svg?color=brightgreen)](https://github.com/ERap320/CrowLeer/blob/master/LICENSE.txt)
-[![Chocolatey downloads](https://img.shields.io/chocolatey/dt/CrowLeer.svg?color=brightgreen&label=Chocolatey%20downloads)](https://chocolatey.org/packages/crowleer)
+[![Chocolatey downloads](https://img.shields.io/chocolatey/dt/crowleer.svg?color=brightgreen&label=Chocolatey%20downloads)](https://chocolatey.org/packages/crowleer)
 [![GitHub downloads](https://img.shields.io/github/downloads/ERap320/CrowLeer/total.svg?label=GitHub%20downloads)](https://github.com/ERap320/CrowLeer/releases)
 
 ## Install and update with [Chocolatey](https://chocolatey.org/packages/crowleer/)
